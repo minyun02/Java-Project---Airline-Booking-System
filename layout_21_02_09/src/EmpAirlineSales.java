@@ -23,7 +23,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 
-//  수정
+
 
 public class EmpAirlineSales extends JPanel implements ActionListener{
 	
