@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,7 +16,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomBookingChange1DAO;
+import dbAll.CustomBookingChange1VO;
+import dbAll.CustomFrameDAO;
+import dbAll.CustomFrameVO;
+
 public class CustomBookingChange1 extends JPanel implements ActionListener, MouseListener {
+	static String userName = "";
+	
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font fnt1 = new Font("굴림체", Font.BOLD, 20);
 	
@@ -53,6 +61,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	
 	//이벤트용 변수
 	int row = 0;
+	String user_name = "";
 	
 	
 	public CustomBookingChange1() {
@@ -98,11 +107,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			cancelBtn.setForeground(Color.white);
 			
 		////table
-		String test[][] = {
-					{"YY510D","20210202","AC123","인천","INC","19:45","런던","LND","10:30"},
-					{"WDW874","20210218","AC987","런던","LND","08:30","인천","INC","17:50"}
-		};
-		model = new DefaultTableModel(test,booking);
+//		String test[][] = {
+//					{"YY510D","20210202","AC123","인천","INC","19:45","런던","LND","10:30"},
+//					{"WDW874","20210218","AC987","런던","LND","08:30","인천","INC","17:50"}
+//		};
+		model = new DefaultTableModel(booking, 0);
 		table = new JTable(model);
 		sp = new JScrollPane(table);
 		add(sp).setBounds(200, 300, 600, 300);
@@ -116,9 +125,41 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 		
 		changeBtn.addActionListener(this);
 		cancelBtn.addActionListener(this);
-	}
 
+		getLoginName();
+		//페이지 들어오면 테이블에 테이버 세팅
+		getAllBooking();
+		
+	}
+	public void getLoginName() {
+		String id = AirlineMain.idField.getText();
+		CustomBookingChange1DAO dao = new CustomBookingChange1DAO();
+		List<CustomBookingChange1VO> name = dao.getName(id);
+		for(int i=0; i<name.size(); i++) {
+			CustomBookingChange1VO vo = name.get(i);
+			user_name = vo.getUser_id();
+		}
 	
+		
+		
+	}
+	
+	public void getAllBooking() {
+		CustomBookingChange1DAO dao = new CustomBookingChange1DAO();
+		List<CustomBookingChange1VO> lst = dao.bookingAllSelect(user_name);
+		
+		setNewTableList(lst);
+	}
+	public void setNewTableList(List<CustomBookingChange1VO> lst) {
+		model.setRowCount(0);
+		for(int i=0; i<lst.size();i++) {
+			CustomBookingChange1VO vo = lst.get(i);
+			Object[] data = {vo.getResno_r(), vo.getBrdDate_r(),vo.getFlightNo_r(),
+					vo.getDep_city_d1(), vo.getDep_airport_d1(), vo.getDepTime_f(),
+					vo.getDes_city_d2(),vo.getDes_airport_d2(),vo.getDesTime_f()};
+			model.addRow(data);
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -24,12 +24,13 @@ import dbAll.CustomFrameDAO;
 import dbAll.CustomFrameVO;
 
 public class CustomFrame extends JFrame implements ActionListener, MouseListener ,Runnable{
+	static String loginName = "";
 	// 상단 패널
 	JPanel northPane = new JPanel();
 		JPanel northNPane = new JPanel();
 		JPanel northCPane = new JPanel();
 		JPanel northSPane = new JPanel();
-		JLabel hiLbl = new JLabel("______님 어서오세요");
+		static JLabel hiLbl = new JLabel("______님 어서오세요");
 		JLabel resLbl = new JLabel("예 약 하 기");
 		JLabel searchLbl = new JLabel("예 약 조 회");
 		JLabel mypageLbl = new JLabel("마 이 페 이 지");
@@ -237,6 +238,10 @@ public class CustomFrame extends JFrame implements ActionListener, MouseListener
 		for(int i=0; i<name.size(); i++) {
 			CustomFrameVO vo = name.get(i);
 			hiLbl.setText(vo.getUser_name()+"님 어서오세요");
+//			System.out.println(vo.getUser_name());
+			loginName = vo.getUser_name();
+//			System.out.println(loginName);
+			
 		}
 	}
 	
