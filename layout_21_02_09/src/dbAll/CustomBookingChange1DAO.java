@@ -43,7 +43,7 @@ public class CustomBookingChange1DAO extends DBConn{
 					+ ", d2.des_city, d2.des, f.desTime "
 					+ "from ac_reservation r, ac_dep d1, ac_flight f, ac_des d2 "
 					+ "where (select u.user_passNo from ac_user u where u.user_name=?)=r.user_passNo "
-					+ "AND r.flightNo=f.flightNo AND f.dep=d1.dep AND f.des=d2.des";
+					+ "AND r.flightNo=f.flightNo AND f.dep=d1.dep AND f.des=d2.des order by r.brdDate";
 			
 			pstmt = conn.prepareStatement(sql);
 			

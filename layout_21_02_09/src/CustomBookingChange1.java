@@ -28,14 +28,14 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	Font fnt1 = new Font("굴림체", Font.BOLD, 20);
 	
 	JLabel numLbl1 = new JLabel("예약번호");
-	JLabel numLbl2 = new JLabel("AB1C57");
+	JLabel numLbl2 = new JLabel(" ");
 	JLabel dateLbl1 = new JLabel("출발일시");
-	JLabel dateLbl2 = new JLabel("2021-01-31");
+	JLabel dateLbl2 = new JLabel(" ");
 	JLabel dateLbl3 = new JLabel(" ");
 	
-	JLabel depLbl = new JLabel("로스엔젤레스");
-	JLabel depALbl = new JLabel("GMP");
-	JLabel depTimeLbl = new JLabel("15:00");
+	JLabel depLbl = new JLabel("출발지");
+	JLabel depALbl = new JLabel("출발공항");
+	JLabel depTimeLbl = new JLabel("출발시간");
 	
 	ImageIcon ii1 = new ImageIcon("img/arrow1.png");
 	Image img = ii1.getImage();
@@ -43,11 +43,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	ImageIcon changeIcon = new ImageIcon(changeImg);
 	JLabel arrowLbl = new JLabel(changeIcon);
 	
-	JLabel flightNumLbl = new JLabel("KK512");
+	JLabel flightNumLbl = new JLabel(" ");
 	
-	JLabel desLbl = new JLabel("산타마리아고메즈");
-	JLabel desALbl = new JLabel("CJU");
-	JLabel arrTimeLbl = new JLabel("16:00");
+	JLabel desLbl = new JLabel("도착지");
+	JLabel desALbl = new JLabel("도착공항");
+	JLabel arrTimeLbl = new JLabel("도착시간");
 
 	JButton changeBtn = new JButton("예약변경");
 	JButton cancelBtn = new JButton("예약취소");
@@ -81,7 +81,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 		add(depLbl).setBounds(345, 150, 100, 25);
 			depLbl.setFont(fnt);
-		add(depALbl).setBounds(345,170, 60, 25);
+		add(depALbl).setBounds(345,170, 100, 25);
 			depALbl.setFont(fnt1);
 		add(depTimeLbl).setBounds(345, 190, 60, 25);	
 			depTimeLbl.setFont(fnt);
@@ -92,7 +92,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 		add(desLbl).setBounds(610, 150, 120, 25);
 			desLbl.setFont(fnt);
-		add(desALbl).setBounds(610, 170, 60, 25);
+		add(desALbl).setBounds(610, 170, 100, 25);
 			desALbl.setFont(fnt1);
 		add(arrTimeLbl).setBounds(610, 190, 60, 25);
 			arrTimeLbl.setFont(fnt);
@@ -139,11 +139,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			CustomBookingChange1VO vo = name.get(i);
 			user_name = vo.getUser_id();
 		}
-	
-		
-		
 	}
-	
 	public void getAllBooking() {
 		CustomBookingChange1DAO dao = new CustomBookingChange1DAO();
 		List<CustomBookingChange1VO> lst = dao.bookingAllSelect(user_name);
