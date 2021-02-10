@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -20,6 +21,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
+
+import dbAll.CustomFrameDAO;
+import dbAll.CustomFrameVO;
+import dbAll.EmpFrameDAO;
+import dbAll.EmpFrameVO;
 
 
 public class EmpMainFrame extends JFrame implements ActionListener, MouseListener,Runnable{
@@ -120,6 +126,7 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 			hiLbl.setHorizontalAlignment(JLabel.CENTER); // 라벨 가운데 정렬
 		//		saleLbl.setForeground(new Color(255,128,128));
 			hiLbl.setForeground(new Color(255,128,64));	
+			customNameChange(); 
 				
 		
 		northCPane.add(saleLbl);//매출관리
@@ -174,7 +181,10 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 //		add("Center",centerPane);
 		
 		add("Center",centerPane);
-		centerPane.setBackground(Color.white);centerPane.setLayout(new BorderLayout());	centerPane.add(plan);
+		
+		centerPane.setBackground(Color.white);
+		centerPane.setLayout(new BorderLayout());	
+			centerPane.add(plan);
 		
 		
 
@@ -257,11 +267,8 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 		
 	}
 	
-//	// 페이지 전환 메소드
-//	public static void paneChange(EmpAirlineSales change, String name) {
-//		card.show(change, name);
-//		
-//	}
+
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -360,7 +367,16 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 	}
 	
 		
-	
+	// _____님 어서오세요 라벨 변경
+	public void customNameChange() {
+		EmpFrameDAO dao = new EmpFrameDAO();
+		String id = AirlineMain.idField.getText();
+		List<EmpFrameVO> name = dao.getName(id);
+		for(int i=0; i<name.size(); i++) {
+			EmpFrameVO vo = name.get(i);
+			hiLbl.setText(vo.getUser_name()+"님 ");
+		}
+	}
 
 	public static void main(String[] args) {
 		Thread t1= new Thread(new EmpMainFrame());
