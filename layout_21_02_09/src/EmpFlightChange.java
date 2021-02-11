@@ -6,8 +6,11 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Calendar;
@@ -32,7 +35,7 @@ import javax.swing.table.DefaultTableModel;
 import dbAll.EmpFlightChangeDAO;
 import dbAll.EmpFlightChangeVO;
 
-public class EmpFlightChange extends JPanel implements ActionListener{
+public class EmpFlightChange extends JPanel implements ActionListener, MouseListener, ItemListener{
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	
 	ImageIcon icon = new ImageIcon("img/calendar.png");
@@ -82,11 +85,17 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 	String[] state = {"기상악화", "기장실종", "기타사유"};
 	JCheckBox cancelBox = new JCheckBox("", false);
 	
-	JButton btn2 = new JButton("설정완료");
+	JButton btn2 = new JButton("설정");
+	JButton delayBtn = new JButton("지연 설정");
+	JButton cancelBtn = new JButton("결항 설정");
 	
 	//이벤트용 변수
-	int clickCheck = 0;
-	int calendarWindowTest = 0;
+	int clickCheck = 0; //달력
+	int calendarWindowTest = 0;//달력 열려있는지
+	
+	int rowSelected = 0; //j테이블에서 항목이 선택되었는지
+	String flightNo = "";//테이블에서 선택된 항공편명 담기
+	String brdDate = "";//테이블에서 선탠된 항공편 탑승일 담기
 	
 	public EmpFlightChange() {
 		setLayout(null);
@@ -144,30 +153,47 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 			delayLbl.setFont(fnt);
 		add(delayCheckBox).setBounds(280, 524, 17, 17);
 			delayCheckBox.setBackground(Color.white);
+			delayCheckBox.setEnabled(false);
 		add(depTimeLbl).setBounds(320,517, 60, 35);
 			depTimeLbl.setFont(fnt);
 		add(depTimeTf).setBounds(400, 521, 80, 25);
 		depTimeTf.setFont(fnt);
+		depTimeTf.setEnabled(false);
 		add(arrTimeLbl).setBounds(500, 516, 100, 35);
 			arrTimeLbl.setFont(fnt);
 		add(arrTimeTf).setBounds(610, 521, 80, 25);
 			arrTimeTf.setFont(fnt);
+			arrTimeTf.setEnabled(false);
 			
 		//결항 상태
 		add(cancelLbl).setBounds(200, 550, 50, 35);
 			cancelLbl.setFont(fnt);
 		add(cancelBox).setBounds(280, 559, 17, 17);
 		cancelBox.setBackground(Color.white);
+		cancelBox.setEnabled(false);
 		cancelState = new JComboBox<String>(state);
 		add(cancelState).setBounds(320,555, 150, 25);
 			cancelState.setFont(fnt);
 			cancelState.setBackground(Color.white);
+			cancelState.setEnabled(false);
 			
-		add(btn2).setBounds(440, 600, 100,30);
+		add(btn2).setBounds(750, 483, 50,25);
 			btn2.setFont(fnt);
 			btn2.setForeground(Color.white);
 			btn2.setBackground(new Color(255,128,128));
 			btn2.setBorder(new LineBorder(Color.white, 1, true));
+		add(delayBtn).setBounds(720,521, 80, 25); 
+			delayBtn.setFont(fnt);
+			delayBtn.setForeground(Color.white);
+			delayBtn.setBackground(new Color(255,128,128));
+			delayBtn.setBorder(new LineBorder(Color.white, 1, true));
+			delayBtn.setEnabled(false);
+		add(cancelBtn).setBounds(720,555, 80, 25);
+			cancelBtn.setFont(fnt);
+			cancelBtn.setForeground(Color.white);
+			cancelBtn.setBackground(new Color(255,128,128));
+			cancelBtn.setBorder(new LineBorder(Color.white, 1, true));
+			cancelBtn.setEnabled(false);
 		
 		setSize(1000, 800);
 		setVisible(true);
@@ -182,8 +208,14 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 				 }
 			}
 		});
+		table.addMouseListener(this);
 		searchBtn.addActionListener(this);
+		btn2.addActionListener(this);
+		delayBtn.addActionListener(this);
+		cancelBtn.addActionListener(this);
 		
+		cancelBox.addItemListener(this);
+		delayCheckBox.addItemListener(this);
 		//초기화면에 오늘날짜 이후 항공편 출력
 		getAllFlight();
 	}
@@ -198,7 +230,7 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 		for(int i=0; i<lst.size(); i++) {
 			EmpFlightChangeVO vo = lst.get(i);
 			Object[] data = {vo.getFlightno_r(), vo.getBrdDate_r(),
-					vo.getDep(), vo.getDepTime(), vo.getDes(), vo.getDepTime(), vo.getFlight_state()};
+					vo.getDep(), vo.getDepTime(), vo.getDes(), vo.getDesTime(), vo.getFlight_state()};
 			model.addRow(data);
 		}
 	}
@@ -230,14 +262,133 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 			desTf.setText("");
 		}
 	}
+	public void setDelayUpdate() {
+		EmpFlightChangeVO vo = new EmpFlightChangeVO();
+		vo.setFlightno_r(flightNo);
+		vo.setBrdDate_r(brdDate);
+		
+		vo.setDepTime(depTimeTf.getText());//빈칸이 들어갈까 아니면 입력한 값이들어갈까?
+		vo.setDesTime(arrTimeTf.getText());
+
+		EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+		int result = dao.delayUpdate(vo);
+		if(result >0) {//수정성공
+			JOptionPane.showMessageDialog(this, "지연 정보가 수정되었습니다");
+			getAllFlight();
+		}else {
+			JOptionPane.showMessageDialog(this, "지연 정보 수정에 실패했습니다. \n 다시 시도하세요");
+		}
+	}
+	@Override
+	public void itemStateChanged(ItemEvent ie) {
+		if(ie.getStateChange()==ItemEvent.SELECTED) {
+			if(ie.getItem()==delayCheckBox) {
+				depTimeTf.setEnabled(true);
+				arrTimeTf.setEnabled(true);
+				delayBtn.setEnabled(true);
+				cancelBox.setEnabled(false);
+				System.out.println("안녕");
+			}else if(ie.getItem()==cancelBox) {
+				cancelState.setEnabled(true);
+				delayCheckBox.setEnabled(false);
+			}
+		}else if(ie.getStateChange()==ItemEvent.DESELECTED) {
+			if(ie.getItem()==delayCheckBox) {
+				depTimeTf.setEnabled(false);
+				depTimeTf.setText("");
+				arrTimeTf.setEnabled(false);
+				arrTimeTf.setText("");
+				cancelBox.setEnabled(true);
+			}else if(ie.getItem()==cancelBox) {
+				cancelState.setEnabled(false);
+				delayCheckBox.setEnabled(true);
+			}
+		}
+		
+	}
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String eventBtn = ae.getActionCommand();
 		if(eventBtn.equals("검색")) {
 			flightSearch();
+		}else if(eventBtn.equals("설정")) {
+			
+		}else if(eventBtn.equals("지연 설정")){
+			if(depTimeTf.getText().equals("")||arrTimeTf.getText().equals("")){
+				JOptionPane.showMessageDialog(this, "변경할 출도착시간을 입력하세요");
+				System.out.println("DDDDDD");
+			}else if(!depTimeTf.getText().equalsIgnoreCase("")||!arrTimeTf.getText().equals("")) {
+				String checkStr = depTimeTf.getText()+arrTimeTf.getText();
+				System.out.println("tf에 써진말"+ checkStr);
+				for(int i=0;i<checkStr.length();) {
+					char c = checkStr.charAt(i);
+					if(c<48 || c>57) {//숫자가 아니야
+						JOptionPane.showMessageDialog(this, "숫자만 입력해주세요");
+						break;	
+					}else {//입련한게 숫자면
+						break;
+					}
+				}
+				//디비에서 업데이트 시키기
+				System.out.println("여기???");
+				setDelayUpdate();
+				JOptionPane.showMessageDialog(this, "항공편 지연설정이 완료되었습니다.");
+				depTimeTf.setText("");
+				arrTimeTf.setText("");
+			}
 		}
 		
 	}
+	@Override
+	public void mouseClicked(MouseEvent me) {
+		if(me.getButton()==1) {
+			if(table.getSelectedRowCount() != 1) {
+				System.out.println("@22");
+				JOptionPane.showMessageDialog(this, "1개의 항공편을 선택해주세요.");
+				delayCheckBox.setEnabled(false);
+				cancelBox.setEnabled(false);
+			}else {
+				rowSelected = table.getSelectedRow()+1; //이벤트용
+				int row = table.getSelectedRow(); //선택된 행에 항공편 이름 알기용
+				flightNo = (String)table.getValueAt(row, 0);
+				String brd = (String)table.getValueAt(row, 1);
+				String brdYear = brd.substring(0, 4);
+				String brdMonth = brd.substring(5, 7);
+				String brdDay = brd.substring(8, 10);
+				brdDate = brdYear+brdMonth+brdDay;
+				System.out.println(brdYear);
+				System.out.println(brdMonth);
+				System.out.println(brdDay);
+				System.out.println(flightNo);
+				System.out.println("탑승일->"+brdDate);
+				delayCheckBox.setEnabled(true);
+				cancelBox.setEnabled(true);
+				
+				System.out.println(rowSelected);
+			}
+		}
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}	
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -428,6 +579,10 @@ public class EmpFlightChange extends JPanel implements ActionListener{
 		public void windowDeiconified(WindowEvent e) {}
 		public void windowActivated(WindowEvent e) {}
 		public void windowDeactivated(WindowEvent e) {}
-	}	
+	}
+
+	
+
+	
 
 }
