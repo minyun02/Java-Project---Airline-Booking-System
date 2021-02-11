@@ -44,7 +44,11 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 	ImageIcon icon2 = new ImageIcon(im2);
 	JButton calBtn = new JButton(icon2);
 	JTextField dateTf = new JTextField(10);
-	String dateSearchWord ="";
+	String dateSearchWord ="";//날짜검색어 저장
+	String acSearchWord = "";//항공편검색어 저장
+	String depSearchWord = "";//출발지검색어 저장
+	String desSearchWord = "";//도착지검색어 저장
+	
 	
 	JLabel acLbl = new JLabel("AC");
 	JTextField acTf = new JTextField(10);
@@ -82,7 +86,7 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 	JTextField arrTimeTf = new JTextField(10);
 	JLabel cancelLbl = new JLabel("결항");
 	JComboBox<String> cancelState;
-	String[] state = {"기상악화", "기장실종", "기타사유"};
+	String[] state = {"사유선택", "기상악화", "기장실종", "기타사유"};
 	JCheckBox cancelBox = new JCheckBox("", false);
 	
 	JButton btn2 = new JButton("설정");
@@ -219,6 +223,13 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 		//초기화면에 오늘날짜 이후 항공편 출력
 		getAllFlight();
 	}
+	public void resetForm() {
+		dateSearchWord = "";
+		dateTf.setText("검색시작날짜 : "+dateSearchWord);
+		acTf.setText("");
+		depTf.setText("");
+		desTf.setText("");
+	}
 	public void getAllFlight() {
 		EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
 		List<EmpFlightChangeVO> lst = dao.flightAllSelect();
@@ -235,11 +246,11 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 		}
 	}
 	public void flightSearch() {
-		String acSearchWord = acTf.getText();
+		acSearchWord = acTf.getText();
 		System.out.println(acSearchWord);
-		String depSearchWord = depTf.getText().toUpperCase();
+		depSearchWord = depTf.getText().toUpperCase();
 		System.out.println(depSearchWord);
-		String desSearchWord = desTf.getText().toUpperCase();
+		desSearchWord = desTf.getText().toUpperCase();
 		System.out.println(desSearchWord);
 		//모든 tf에 검색어가 없을때 현재날짜 기준 모든 항공편 출력
 		if(dateSearchWord.equals("")&& acSearchWord.equals("")&&depSearchWord.equals("")&&
@@ -247,19 +258,76 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 			JOptionPane.showMessageDialog(this, "검색조건 미입력으로 \n"
 					+ "현재날짜기준 항공편이 출력됩니다");
 			getAllFlight();
-		}else {//검색어가 있을때
+		}else if(!dateSearchWord.equals("")&&!acSearchWord.equals("")) {//2-2출발날짜&항공편
+			System.out.println("출발날짜&항공편");
 			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
-			List<EmpFlightChangeVO> searchList = dao.getSearchRecord(dateSearchWord, acSearchWord, depSearchWord, desSearchWord);
+			List<EmpFlightChangeVO> searchList = dao.getDateFlightRecord(dateSearchWord, acSearchWord);
 			if (searchList.size()==0) {
 				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
 			}else {
 				setNewTableList(searchList);
 			}
-			dateSearchWord = "";
-			dateTf.setText("검색시작날짜 : "+dateSearchWord);
-			acTf.setText("");
-			depTf.setText("");
-			desTf.setText("");
+			resetForm();
+		}else if(!dateSearchWord.equals("")&&!depSearchWord.equals("")) {//2-3출발날짜&출발지
+			System.out.println("출발날짜&출발지");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getDateDepRecord(dateSearchWord, depSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
+		}else if(!dateSearchWord.equals("")&&!desSearchWord.equals("")) {//2-4출발날짜&도착지
+			System.out.println("출발날짜&도착지");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getDateDesRecord(dateSearchWord, desSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
+		}else if(!acSearchWord.equals("")&&!depSearchWord.equals("")) {//2-5항공편&출발지
+			System.out.println("항공편&출발지");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getFlightDepRecord(acSearchWord, depSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
+		}else if(!acSearchWord.equals("")&&!desSearchWord.equals("")) {//2-6항공편&도착지
+			System.out.println("항공편&도착지");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getFlightDesRecord(acSearchWord, desSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
+		}else if(!depSearchWord.equals("")&&!desSearchWord.equals("")) {//2-7출발지&도착지
+			System.out.println("출발지&도착지");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getDepDesRecord(depSearchWord, desSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
+		}else {//2-1검색어가 1개만 있을때
+			System.out.println("검색어가 1개만 있을때");
+			EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+			List<EmpFlightChangeVO> searchList = dao.getSearchOneRecord(dateSearchWord, acSearchWord, depSearchWord, desSearchWord);
+			if (searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+			}else {
+				setNewTableList(searchList);
+			}
+			resetForm();
 		}
 	}
 	public void setDelayUpdate() {
@@ -279,6 +347,21 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 			JOptionPane.showMessageDialog(this, "지연 정보 수정에 실패했습니다. \n 다시 시도하세요");
 		}
 	}
+	public void setCancelUpdate() {
+		EmpFlightChangeVO vo = new EmpFlightChangeVO();
+		vo.setFlightno_r(flightNo);
+		vo.setBrdDate_r(brdDate);
+		
+		EmpFlightChangeDAO dao = new EmpFlightChangeDAO();
+		int result = dao.cancelUpdate(vo);
+		if(result >0) {//수정성공
+			JOptionPane.showMessageDialog(this, "해당 항공편이 결항 처리되었습니다.");
+			getAllFlight();
+		}else {
+			JOptionPane.showMessageDialog(this, "결항 처리에 실패했습니다. \n 다시 시도하세요");
+		}
+		
+	}
 	@Override
 	public void itemStateChanged(ItemEvent ie) {
 		if(ie.getStateChange()==ItemEvent.SELECTED) {
@@ -291,6 +374,7 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 			}else if(ie.getItem()==cancelBox) {
 				cancelState.setEnabled(true);
 				delayCheckBox.setEnabled(false);
+				cancelBtn.setEnabled(true);
 			}
 		}else if(ie.getStateChange()==ItemEvent.DESELECTED) {
 			if(ie.getItem()==delayCheckBox) {
@@ -301,7 +385,10 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 				cancelBox.setEnabled(true);
 			}else if(ie.getItem()==cancelBox) {
 				cancelState.setEnabled(false);
+				cancelState.setSelectedIndex(0);
 				delayCheckBox.setEnabled(true);
+				cancelBox.setEnabled(false);
+				cancelBtn.setEnabled(false);
 			}
 		}
 		
@@ -335,6 +422,12 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 				JOptionPane.showMessageDialog(this, "항공편 지연설정이 완료되었습니다.");
 				depTimeTf.setText("");
 				arrTimeTf.setText("");
+			}
+		}else if(eventBtn.equals("결항 설정")) {
+			if(cancelState.getSelectedIndex()==0) {
+				JOptionPane.showMessageDialog(this, "결항 사유를 선택해주세요");
+			}else {
+				setCancelUpdate();
 			}
 		}
 		
