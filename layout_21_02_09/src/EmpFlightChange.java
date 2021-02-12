@@ -43,7 +43,7 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 	Image im2 = im.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 	ImageIcon icon2 = new ImageIcon(im2);
 	JButton calBtn = new JButton(icon2);
-	JTextField dateTf = new JTextField(10);
+	
 	String dateSearchWord ="";//날짜검색어 저장
 	String acSearchWord = "";//항공편검색어 저장
 	String depSearchWord = "";//출발지검색어 저장
@@ -52,6 +52,8 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 	
 	JLabel acLbl = new JLabel("AC");
 	JTextField acTf = new JTextField(10);
+	JTextField dateTf = new JTextField(10);//검색날짜 보여주는 필드
+	JLabel rowCountLbl = new JLabel("");
 	
 	JLabel depLbl = new JLabel("출발지");
 	JTextField depTf = new JTextField(10);
@@ -101,6 +103,8 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 	String flightNo = "";//테이블에서 선택된 항공편명 담기
 	String brdDate = "";//테이블에서 선탠된 항공편 탑승일 담기
 	
+	int rowCount = 0; 
+	
 	public EmpFlightChange() {
 		setLayout(null);
 		this.setBackground(Color.white);
@@ -110,6 +114,7 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 			calBtn.setContentAreaFilled(false);
 			calBtn.setFocusPainted(false);
 		add(dateTf).setBounds(200,140, 200,25);dateTf.setText("검색시작날짜 : "+dateSearchWord); dateTf.setFont(fnt); dateTf.setBorder(new LineBorder(Color.white)); dateTf.setEnabled(false);
+		add(rowCountLbl).setBounds(680,140, 200,25);rowCountLbl.setText("검색결과 : "); rowCountLbl.setFont(fnt);
 		add(acLbl).setBounds(260, 100, 80, 35);
 			//acLbl.setFont(fnt);
 		add(acTf).setBounds(285, 105, 100, 25);
@@ -244,6 +249,10 @@ public class EmpFlightChange extends JPanel implements ActionListener, MouseList
 					vo.getDep(), vo.getDepTime(), vo.getDes(), vo.getDesTime(), vo.getFlight_state()};
 			model.addRow(data);
 		}
+		rowCount = table.getRowCount();
+		System.out.println(rowCount);
+		rowCountLbl.setText("검색결과 : "+rowCount+"개");
+		
 	}
 	public void flightSearch() {
 		acSearchWord = acTf.getText();

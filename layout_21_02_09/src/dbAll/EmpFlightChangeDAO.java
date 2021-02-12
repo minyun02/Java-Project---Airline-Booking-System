@@ -47,7 +47,7 @@ public class EmpFlightChangeDAO extends DBConn{
 		}
 		return result;
 	}
-	public List<EmpFlightChangeVO> flightAllSelect(){
+	public List<EmpFlightChangeVO> flightAllSelect(){//초기 테이블 세팅
 		List<EmpFlightChangeVO> lst = new ArrayList<EmpFlightChangeVO>();
 		try {
 			getConn();

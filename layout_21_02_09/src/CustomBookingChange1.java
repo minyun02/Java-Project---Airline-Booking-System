@@ -154,6 +154,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 					vo.getDep_city_d1(), vo.getDep_airport_d1(), vo.getDepTime_f(),
 					vo.getDes_city_d2(),vo.getDes_airport_d2(),vo.getDesTime_f()};
 			model.addRow(data);
+			
 		}
 	}
 
