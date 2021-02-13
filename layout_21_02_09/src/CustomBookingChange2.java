@@ -25,7 +25,7 @@ import dbAll.CustomBookingChange1VO;
 import dbAll.CustomBookingChange2DAO;
 import dbAll.CustomBookingChange2VO;
 
-public class CustomBookingChange2 extends JPanel implements ActionListener,MouseListener{
+public class CustomBookingChange2 extends JPanel  implements ActionListener,MouseListener{
 	Font fnt = new Font("굴림체",Font.BOLD,14);
 	JPanel changePane = new JPanel();
 		JPanel centerPane = new JPanel();
@@ -33,12 +33,12 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 				JPanel titlePane = new JPanel();
 					JLabel titleLbl = new JLabel("항공편을 선택하세요");
 				JPanel countryPane = new JPanel();
-					JLabel startCountry = new JLabel("출발지");
+					static JLabel startCountry = new JLabel("출발지");
 					ImageIcon icon = new ImageIcon("img/arrow.png");
 					Image im = icon.getImage();
 					Image im2 = im.getScaledInstance(50, 30, Image.SCALE_DEFAULT);
 					ImageIcon icon2 = new ImageIcon(im2);
-					JLabel arriveCountry = new JLabel("도착지");
+					static JLabel arriveCountry = new JLabel("도착지");
 				JPanel datePane = new JPanel();
 					JLabel startDate = new JLabel("2021/02/02");
 					JLabel arriveDate = new JLabel("2021/02/08");
@@ -55,7 +55,7 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 	
 	//이벤트용 변수
 		int row = 0;
-		
+		String dep;
 		
 	public CustomBookingChange2() {
 		setLayout(new BorderLayout());
@@ -129,8 +129,7 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 		setSize(1000,800);
 		setVisible(true);
 		
-		
-		setFlightTable();
+		//setFlightTable();
 		
 		//
 		tbl.addMouseListener(this);

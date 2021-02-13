@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -94,6 +97,16 @@ public class CustomBookingChange4 extends JPanel implements ActionListener{
 			String btnStr = ((JButton) obj).getText();
 			if(btnStr.equals("저장")) {
 				JOptionPane.showMessageDialog(this, "파일 저장.....");
+				 try {
+					 BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+			         Graphics2D graphics2D = image.createGraphics();
+			         CustomFrame.bookingChange4.paint(graphics2D);
+			         ImageIO.write(image,"jpeg", new File("D://screen/test.jpeg"));
+			        }
+			        catch(Exception exception)
+			        {
+			            //code
+			        }
 				//파일 쓰기
 			}else if(btnStr.equals("확인")) {
 				JOptionPane.showMessageDialog(this, "예약변경이 완료되었습니다.");
