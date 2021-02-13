@@ -8,16 +8,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import dbAll.CustomBookingChange2DAO;
+import dbAll.CustomBookingChange2VO;
 
 public class CustomBookingChange2 extends JPanel implements ActionListener,MouseListener{
 	Font fnt = new Font("굴림체",Font.BOLD,14);
@@ -37,14 +41,11 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 					JLabel startDate = new JLabel("2021/02/02");
 					JLabel arriveDate = new JLabel("2021/02/08");
 			JPanel tablePane = new JPanel();
-				Object modelTitle[] = {"출발시간","도착시간","총 비행시간","비행편명","예약 상태","운임"};
-				String str[][] = {
-						{"x","x","x","x","x","x"},
-						{"x","x","x","x","x","x"}
-				};
-				DefaultTableModel model = new DefaultTableModel(str,modelTitle);
+				String modelTitle[] = {"출발시간","도착시간","총 비행시간","비행편명","예약 상태","운임"};
+				DefaultTableModel model = new DefaultTableModel(modelTitle,0);
 				JTable tbl = new JTable(model);
 				JScrollPane sp = new JScrollPane(tbl);
+				
 		JPanel btnPane = new JPanel();
 			JButton cancelBtn = new JButton("변경취소");
 			JButton nextBtn = new JButton("다음단계");
@@ -52,6 +53,12 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 	
 	//이벤트용 변수
 		int row = 0;
+		
+		String depFromCbc1 = "";//cbc1에서 출발지 받아와서 담아주기
+		String desFromCbc1 = "";//cbc1에서 출발지 받아와서 담아주기
+		
+		List<CustomBookingChange2VO> lst = new ArrayList<CustomBookingChange2VO>();
+		
 	public CustomBookingChange2() {
 		setLayout(new BorderLayout());
 		
@@ -131,6 +138,30 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 		nextBtn.addActionListener(this);
 	}
 	
+	public void getDepFromCbc1(String dep, String des) {///cbc1에서 출발지 받아오기
+		String dep2 = dep;
+		String des2 = des;
+		System.out.println("cbc2로 잘 도착dep->"+dep2);
+		System.out.println("cbc2로 잘 도착des->"+des2);
+		
+		CustomBookingChange2DAO dao = new CustomBookingChange2DAO();
+		lst = dao.getDepDes(dep2, des2);
+		
+		setNewTableList(lst);
+	}
+	public void setNewTableList(List<CustomBookingChange2VO> lst) {
+		model.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomBookingChange2VO vo = lst.get(i);
+			Object[] data = {vo.getDepTime(), vo.getDesTime(), vo.getFlightTime(),
+					vo.getFlightNo(), vo.getFlightState(), vo.getFare()};
+			model.addRow(data);
+			
+			System.out.println("1->"+vo.getDepTime()+"2->"+vo.getDesTime()+"3->"+vo.getFlightTime()
+			+"4->"+vo.getFlightNo()+"5->"+vo.getFlightState()+"6->"+vo.getFare());
+			}
+		sp.getViewport().setBackground(Color.white);
+	}
 	public void actionPerformed(ActionEvent ae){
 		Object obj = ae.getSource();
 		if(obj instanceof JButton) {
@@ -140,16 +171,16 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 				CustomFrame.plan.setVisible(true);
 				CustomFrame.centerPane.add(CustomFrame.plan);
 			} else if(str.equals("다음단계")) {
-				if(row==0) {
-					JOptionPane.showMessageDialog(this, "변경할 항공편을 선택하세요.");
-				}else {
+//				if(row==0) {
+//					JOptionPane.showMessageDialog(this, "변경할 항공편을 선택하세요.");
+//				}else {
 					this.setVisible(false);
 					CustomFrame.bookingChange3.setVisible(true);
 					CustomFrame.centerPane.add(CustomFrame.bookingChange3);
 				}
 			}
 		}
-	}
+	//}
 
 	@Override
 	public void mouseClicked(MouseEvent me) {

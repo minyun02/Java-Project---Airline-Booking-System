@@ -197,7 +197,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 	/////////////////////////////////////////////////////////////////////////
 								//결제창//
 	////////////////////////////////////////////////////////////////////////
-	class CustomChangePayment extends JFrame implements ActionListener, MouseListener, WindowListener{
+	class CustomChangePayment extends JFrame implements ActionListener, WindowListener{
 		Font fnt = new Font("굴림체", Font.BOLD, 14);
 		
 		JLabel amountLbl1 = new JLabel("초기 운임");
@@ -280,8 +280,8 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			
 			paymentBox.addActionListener(this);
-			payBtn.addMouseListener(this);
-			cancelBtn.addMouseListener(this);
+			payBtn.addActionListener(this);
+			cancelBtn.addActionListener(this);
 			addWindowListener(this);
 		}
 		@Override
@@ -302,15 +302,12 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 					numLbl.setVisible(false);
 					cardNumTf.setVisible(true);
 				}
-			}
-			
-		}
-		@Override
-		public void mouseClicked(MouseEvent me) {
-			Object obj = me.getSource();
-			if(obj instanceof JButton) {
-				String btnName = ((JButton) obj).getText();
-				if(btnName.equals("결제")) {
+			}else if(obj instanceof JButton) {
+				String btnStr = ((JButton) obj).getText();
+				if(btnStr.equals("취소")) {
+					JOptionPane.showMessageDialog(this, "예약변경이 취소되었습니다.");
+					this.setVisible(false);
+				}else if(btnStr.equals("결제")) {
 					JOptionPane.showMessageDialog(this, "결제가 완료되었습니다");
 					this.setVisible(false);
 //					paymentState = 1; // 1이면 결제를 했다는 뜻이니까 cbc4로 화면 전환 가자!!
@@ -322,20 +319,6 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			}
 			
 		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-
-		@Override
-		public void mouseExited(MouseEvent e) {}
-
-		
 		
 		@Override
 		public void windowOpened(WindowEvent e) {
