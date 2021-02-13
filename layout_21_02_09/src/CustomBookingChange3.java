@@ -238,6 +238,8 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			setLayout(null);
 			setBackground(Color.white);
 			
+			System.out.println("되나?");
+			
 			add(amountLbl1).setBounds(60,70, 80,25); amountLbl1.setFont(fnt);
 			add(amountLbl2).setBounds(200,70, 100,25);amountLbl2.setFont(fnt);
 			add(wonLbl).setBounds(270,70, 20,25); wonLbl.setFont(fnt);

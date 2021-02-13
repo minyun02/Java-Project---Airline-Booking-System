@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomBookingChange1DAO;
+import dbAll.CustomBookingChange1VO;
 import dbAll.CustomBookingChange2DAO;
 import dbAll.CustomBookingChange2VO;
 
@@ -54,10 +56,6 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 	//이벤트용 변수
 		int row = 0;
 		
-		String depFromCbc1 = "";//cbc1에서 출발지 받아와서 담아주기
-		String desFromCbc1 = "";//cbc1에서 출발지 받아와서 담아주기
-		
-		List<CustomBookingChange2VO> lst = new ArrayList<CustomBookingChange2VO>();
 		
 	public CustomBookingChange2() {
 		setLayout(new BorderLayout());
@@ -132,29 +130,33 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 		setVisible(true);
 		
 		
+		setFlightTable();
+		
 		//
 		tbl.addMouseListener(this);
 		cancelBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
 	}
 	
-	public void getDepFromCbc1(String dep, String des) {///cbc1에서 출발지 받아오기
-		String dep2 = dep;
-		String des2 = des;
-		System.out.println("cbc2로 잘 도착dep->"+dep2);
-		System.out.println("cbc2로 잘 도착des->"+des2);
+	public void setFlightTable() {
+		String dep = new CustomBookingChange1().depLbl.getText();
+		System.out.println(dep);
 		
 		CustomBookingChange2DAO dao = new CustomBookingChange2DAO();
-		lst = dao.getDepDes(dep2, des2);
+		//List<CustomBookingChange2VO> lst = dao.bookingAllSelect();
 		
-		setNewTableList(lst);
+		
+		//setNewTableList(lst);
 	}
+	
+	
 	public void setNewTableList(List<CustomBookingChange2VO> lst) {
 		model.setRowCount(0);
 		for(int i=0; i<lst.size(); i++) {
 			CustomBookingChange2VO vo = lst.get(i);
 			Object[] data = {vo.getDepTime(), vo.getDesTime(), vo.getFlightTime(),
 					vo.getFlightNo(), vo.getFlightState(), vo.getFare()};
+			
 			model.addRow(data);
 			
 			System.out.println("1->"+vo.getDepTime()+"2->"+vo.getDesTime()+"3->"+vo.getFlightTime()
