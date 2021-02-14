@@ -32,6 +32,7 @@ public class CustomMyPage extends JPanel implements ActionListener{
 	JButton btn = new JButton("돌아가기");
 	
 	CustomPlan cp = new CustomPlan();
+	static int mileage = 0;
 	public CustomMyPage() {
 		setLayout(new BorderLayout());
 		main.setLayout(new GridBagLayout());
@@ -139,6 +140,7 @@ public class CustomMyPage extends JPanel implements ActionListener{
 			memberLbl.setText(vo.getUser_name()+"님");
 			memberNumLbl.setText("회원번호 "+vo.getUserno());
 			mileNumLbl.setText(vo.getMileage()+"점");
+			mileage = vo.getMileage();
 		}
 		
 	}

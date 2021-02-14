@@ -32,19 +32,19 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 		JPanel lblPane= new JPanel();
 			JLabel titleLbl = new JLabel("예약자 정보입력");
 			JPanel hanPane = new JPanel();
-				JLabel hanLbl = new JLabel("예약자 성명(한)");
+				JLabel hanLbl = new JLabel("예약자 성명(한) ex) 홍길동");
 				JTextField hanField = new JTextField(30);
 			JPanel engPane = new JPanel();
-				JLabel engLbl = new JLabel("예약자 성명(영어)");
+				JLabel engLbl = new JLabel("예약자 성명(영어) ex) Hong GilDong");
 				JTextField engField = new JTextField(30);
 			JPanel passportPane = new JPanel();
-				JLabel	passportLbl = new JLabel("여권번호");
+				JLabel	passportLbl = new JLabel("여권번호 ex) M986541");
 				JTextField passportField = new JTextField(30);
 			JPanel passEndPane = new JPanel();
-				JLabel passEndLbl = new JLabel("여권만료일");
+				JLabel passEndLbl = new JLabel("여권만료일 ex) 20230204");
 				JTextField passEndField = new JTextField(30);
 			JPanel birthPane = new JPanel();
-				JLabel birthLbl = new JLabel("생년월일");
+				JLabel birthLbl = new JLabel("생년월일 ex) 19950807");
 				JTextField birthField = new JTextField(30);
 			JPanel genderPane = new JPanel();
 				JLabel genderLbl = new JLabel("성별");
@@ -58,10 +58,10 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 				DefaultComboBoxModel<String> nationModel = new DefaultComboBoxModel<String>(nation);
 				JComboBox<String> nationCombo = new JComboBox<String>(nationModel);
 			JPanel telPane = new JPanel();
-				JLabel telLbl = new JLabel("연락처");
+				JLabel telLbl = new JLabel("연락처 ex) 010-1234-5678");
 				JTextField telField = new JTextField(30);
 			JPanel emailPane = new JPanel();
-				JLabel emailLbl = new JLabel("이메일");
+				JLabel emailLbl = new JLabel("이메일 ex) hong123@naver.com");
 				JTextField emailField = new JTextField(30);
 				
 			JPanel checkPane = new JPanel();
@@ -187,8 +187,8 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 				lst.removeAll(lst);
 				fellowLst.removeAll(fellowLst);
 				titleLbl.setText("예약자 정보입력");
-				hanLbl.setText("예약자 이름(한글)");
-				engLbl.setText("예약자 이름(영어)");
+				hanLbl.setText("예약자 이름(한글) ex) 홍길동");
+				engLbl.setText("예약자 이름(영어) ex) Hong GilDong");
 				checkBox.setSelected(false);
 				nextBtn.setEnabled(false);
 				c=0;
@@ -224,8 +224,8 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 						nextBtn.setEnabled(false);
 						c=0;
 						titleLbl.setText("동승자 정보입력");
-						hanLbl.setText("동승자 이름(한글)");
-						engLbl.setText("동승자 이름(영어)");
+						hanLbl.setText("동승자 이름(한글) ex) 홍길동");
+						engLbl.setText("동승자 이름(영어) ex) Hong GilDong");
 						nextCheck++;
 					}
 					
@@ -309,8 +309,8 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 		lst.removeAll(lst);
 		fellowLst.removeAll(fellowLst);
 		titleLbl.setText("예약자 정보입력");
-		hanLbl.setText("예약자 이름(한글)");
-		engLbl.setText("예약자 이름(영어)");
+		hanLbl.setText("예약자 이름(한글) ex) 홍길동");
+		engLbl.setText("예약자 이름(영어) ex) Hong GilDong");
 		checkBox.setSelected(false);
 		nextBtn.setEnabled(false);
 		c=0;
