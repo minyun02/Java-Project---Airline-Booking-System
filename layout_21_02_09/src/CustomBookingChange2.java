@@ -153,7 +153,7 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 		arriveCountry.setText(des);
 		
 		
-		setTable(dep, des, flightNum);`
+		setTable(dep, des, flightNum);
 		//System.out.println(dep+"/"+des+"/"+startDate);
 	}
 	public void setNewTableList(List<CustomBookingChange2VO> lst) {
