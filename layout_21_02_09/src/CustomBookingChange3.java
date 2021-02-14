@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,12 +22,16 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomBookingChange2VO;
+import dbAll.CustomBookingChange3DAO;
+import dbAll.CustomBookingChange3VO;
+
 public class CustomBookingChange3 extends JPanel implements MouseListener, ItemListener{
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font titleFnt = new Font("굴림체", Font.BOLD, 32);
 	
 	JLabel titleLbl1 = new JLabel("선택 항공 내역");
-	String flightStr[] = {"출발지", "도착지", "출발일", "도착일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
+	String flightStr[] = {"출발지", "도착지", "출발일",  "출발시간", "도착시간", "항공편명", "좌석", "운임"};
 	JTable table1;
 	JScrollPane sp1;
 	DefaultTableModel model1;
@@ -42,7 +47,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 	JLabel lbl2 = new JLabel("해당 정보를 확인하세요. 위 내용은 예약 완료 후 변경이 불가합니다.");
 	
 	JLabel titleLbl3 = new JLabel("결제 내역");
-	String paymentStr[] = {"구분",  "변경 전", "변경 후", "결제예정금액"};
+	String paymentStr[] = {"변경 전", "변경 후", "결제예정금액"};
 	JTable table3;
 	JScrollPane sp3;
 	DefaultTableModel model3;
@@ -134,7 +139,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			}else {
 				allSelected = 1;
 				payBtn.setEnabled(true);
-				System.out.println(allSelected);
+				//System.out.println(allSelected);
 			}
 		}else if(ie.getStateChange()==ItemEvent.DESELECTED) {
 			if(ie.getItem()==check1) {
@@ -147,7 +152,57 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 		}
 		
 	}
+	///**************************************************************************************TABLE1
+	public void table1Print() {
+		String newFlight = CustomBookingChange2.newFlightNum;//t1,t3
+		
+		String resNo = CustomBookingChange1.getResNo;//t1,t2
+		String oldFlight = CustomBookingChange1.getFlight;//t3
+		
+		setTable1(newFlight, resNo);
+		System.out.println(newFlight+"        "+resNo);
+		System.out.println(oldFlight);
+	}
+	public void setTable1(String newFlight, String resNo) {
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		List<CustomBookingChange3VO> lst = dao.getTable1(newFlight, resNo);
+		
+		setTable1List(lst);
+	}
+	public void setTable1List(List<CustomBookingChange3VO> lst) {
+		model1.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomBookingChange3VO vo = lst.get(i);
+			Object[] data = {vo.getDep(), vo.getDes(), vo.getBrdDate(), vo.getDepTime(),
+					vo.getDesTime(), vo.getFlightNo(), vo.getSeatNo(), vo.getFare()};
 
+			model1.addRow(data);
+			}
+	}
+	
+///**************************************************************************************TABLE2
+	public void table2Print() {
+		String resNo = CustomBookingChange1.getResNo;//t1,t2
+		
+		setTable2(resNo);
+	}
+	public void setTable2(String resNo) {
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		List<CustomBookingChange3VO> lst = dao.getTable2(resNo);
+		
+		setTable2List(lst);
+	}
+	public void setTable2List(List<CustomBookingChange3VO> lst) {
+		model2.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomBookingChange3VO vo = lst.get(i);
+			Object[] data = {vo.getUserName(), vo.getUserEname(), vo.getUserPassNo(), vo.getUserExdate(),
+					vo.getUserNation(), vo.getUserBirth(), vo.getUserTel(), vo.getUserEmail()};
+
+			model2.addRow(data);
+			}
+	}
+	///**************************************************************************************TABLE3
 	@Override
 	public void mouseClicked(MouseEvent me) {
 		Object obj = me.getSource();
@@ -290,7 +345,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			Object obj = ae.getSource();
 			if(obj instanceof JComboBox) {
 				String comboItem = (String)paymentBox.getSelectedItem();
-				System.out.println(comboItem);
+				//System.out.println(comboItem);
 				
 				if(comboItem.equals("계좌이체")) {
 					cardNumLbl.setVisible(false);

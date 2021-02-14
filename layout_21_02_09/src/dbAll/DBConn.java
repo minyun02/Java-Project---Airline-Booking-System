@@ -16,8 +16,10 @@ public class DBConn {
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	String username = "c##scott";
+	//String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	String url = "jdbc:oracle:thin:@localhost:51521:xe";
+	//String username = "c##scott";
+	String username = "SCOTT";
 	String userpwd = "tiger";
 	
 	public DBConn() {}

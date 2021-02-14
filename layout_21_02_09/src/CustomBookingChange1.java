@@ -63,6 +63,10 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	int row = 0;
 	String user_name = "";
 	
+	static String getDep;
+	static String getDes;
+	static String getFlight;
+	static String getResNo;
 	
 	public CustomBookingChange1() {
 		setLayout(null);
@@ -164,12 +168,13 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 		if(obj instanceof JButton) {
 			String btnStr = ((JButton) obj).getText();
 			if(btnStr.equals("예약변경")) {
-				System.out.println("1111");
+				//System.out.println("1111");
 				if(row==0) {
 					JOptionPane.showMessageDialog(this, "변경할 예약정보를 선택해주세요.");
 				}else {
 					this.setVisible(false);
 					CustomFrame.bookingChange2.setVisible(true);
+					CustomFrame.bookingChange2.tablePrint();
 					CustomFrame.centerPane.add(CustomFrame.bookingChange2);
 				}
 			}else if(btnStr.equals("예약취소")) {
@@ -188,11 +193,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	public void mouseClicked(MouseEvent me) {
 		if(me.getButton()==1) {
 			if(table.getSelectedRowCount() != 1) {
-				System.out.println("@22");
+				//System.out.println("@22");
 				JOptionPane.showMessageDialog(this, "1개의 예약정보만 선택해주세요.");
 			}else {
 				row = table.getSelectedRow()+1;
-				System.out.println(row);
+				//System.out.println(row);
 			}
 		}
 		
@@ -215,11 +220,18 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 			depLbl.setText((String)model.getValueAt(row, 3));
 			depALbl.setText((String)model.getValueAt(row, 4));
+			
 			depTimeLbl.setText((String)model.getValueAt(row, 5));
 			
 			desLbl.setText((String)model.getValueAt(row, 6));
 			desALbl.setText((String)model.getValueAt(row, 7));
+			
 			arrTimeLbl.setText((String)model.getValueAt(row, 8));
+
+			getDep = ((String)model.getValueAt(row, 4));
+			getDes = ((String)model.getValueAt(row, 7));
+			getFlight = ((String)model.getValueAt(row, 2));
+			getResNo = ((String)model.getValueAt(row, 0));
 		}
 		
 	}

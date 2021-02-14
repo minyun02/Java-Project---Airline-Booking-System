@@ -33,12 +33,12 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 				JPanel titlePane = new JPanel();
 					JLabel titleLbl = new JLabel("항공편을 선택하세요");
 				JPanel countryPane = new JPanel();
-					static JLabel startCountry = new JLabel("출발지");
+					JLabel startCountry = new JLabel("출발지");
 					ImageIcon icon = new ImageIcon("img/arrow.png");
 					Image im = icon.getImage();
 					Image im2 = im.getScaledInstance(50, 30, Image.SCALE_DEFAULT);
 					ImageIcon icon2 = new ImageIcon(im2);
-					static JLabel arriveCountry = new JLabel("도착지");
+					JLabel arriveCountry = new JLabel("도착지");
 				JPanel datePane = new JPanel();
 					JLabel startDate = new JLabel("2021/02/02");
 					JLabel arriveDate = new JLabel("2021/02/08");
@@ -54,8 +54,10 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 		JPanel test = new JPanel();
 	
 	//이벤트용 변수
-		int row = 0;
-		String dep;
+		int row = 0; //테이블에서 눌린 행이 1개가 아닌걸 확인하는 용도
+		
+		static String newFlightNum;
+		
 		
 	public CustomBookingChange2() {
 		setLayout(new BorderLayout());
@@ -129,26 +131,31 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 		setSize(1000,800);
 		setVisible(true);
 		
-		//setFlightTable();
+		
 		
 		//
 		tbl.addMouseListener(this);
 		cancelBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
 	}
-	
-	public void setFlightTable() {
-		String dep = new CustomBookingChange1().depLbl.getText();
-		System.out.println(dep);
-		
+	public void setTable(String dep, String des, String flightNum) {
 		CustomBookingChange2DAO dao = new CustomBookingChange2DAO();
-		//List<CustomBookingChange2VO> lst = dao.bookingAllSelect();
+		List<CustomBookingChange2VO> lst = dao.getDepDes(dep, des, flightNum);
 		
-		
-		//setNewTableList(lst);
+		setNewTableList(lst);
 	}
-	
-	
+	public void tablePrint() {
+		String dep = CustomBookingChange1.getDep;
+		String des =  CustomBookingChange1.getDes;
+		String flightNum = CustomBookingChange1.getFlight;
+		
+		startCountry.setText(dep);
+		arriveCountry.setText(des);
+		
+		
+		setTable(dep, des, flightNum);`
+		//System.out.println(dep+"/"+des+"/"+startDate);
+	}
 	public void setNewTableList(List<CustomBookingChange2VO> lst) {
 		model.setRowCount(0);
 		for(int i=0; i<lst.size(); i++) {
@@ -158,8 +165,6 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 			
 			model.addRow(data);
 			
-			System.out.println("1->"+vo.getDepTime()+"2->"+vo.getDesTime()+"3->"+vo.getFlightTime()
-			+"4->"+vo.getFlightNo()+"5->"+vo.getFlightState()+"6->"+vo.getFare());
 			}
 		sp.getViewport().setBackground(Color.white);
 	}
@@ -172,16 +177,21 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 				CustomFrame.plan.setVisible(true);
 				CustomFrame.centerPane.add(CustomFrame.plan);
 			} else if(str.equals("다음단계")) {
-//				if(row==0) {
-//					JOptionPane.showMessageDialog(this, "변경할 항공편을 선택하세요.");
-//				}else {
+				if(row==0) {
+					JOptionPane.showMessageDialog(this, "변경할 항공편을 선택하세요.");
+					
+					CustomFrame.bookingChange3.setVisible(true);
+					
+				}else {
 					this.setVisible(false);
 					CustomFrame.bookingChange3.setVisible(true);
+					CustomFrame.bookingChange3.table1Print();
+					CustomFrame.bookingChange3.table2Print();
 					CustomFrame.centerPane.add(CustomFrame.bookingChange3);
 				}
 			}
 		}
-	//}
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent me) {
@@ -199,13 +209,19 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseReleased(MouseEvent me) {
+		if(me.getButton()==1) {
+			int rowSelected = tbl.getSelectedRow();
+			startDate.setText((String)model.getValueAt(rowSelected, 0));
+			arriveDate.setText((String)model.getValueAt(rowSelected, 1));
+			
+			newFlightNum = (String)model.getValueAt(rowSelected, 3);
+		}
 		
 	}
 

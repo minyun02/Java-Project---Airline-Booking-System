@@ -8,16 +8,17 @@ public class CustomBookingChange2DAO extends DBConn{
 	public CustomBookingChange2DAO() {
 		
 	}
-	public List<CustomBookingChange2VO> getDepDes(String dep, String des){
+	public List<CustomBookingChange2VO> getDepDes(String dep, String des, String flightNum){
 		List<CustomBookingChange2VO> lst = new ArrayList<CustomBookingChange2VO>();
 		try {
 			getConn();
 			sql = "select dep,des, depTime, desTime, flightTime, flightNo, flight_state, fare from ac_flight "
-					+ "where dep=? AND des=? order by depTime";
+					+ "where flightno not in(?) AND dep=? AND des=? order by depTime";
 			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, dep);
-			pstmt.setString(2, des);
+	
+			pstmt.setString(1, flightNum);
+			pstmt.setString(2, dep);
+			pstmt.setString(3, des);
 			System.out.println(dep+des);
 			rs = pstmt.executeQuery();
 			
