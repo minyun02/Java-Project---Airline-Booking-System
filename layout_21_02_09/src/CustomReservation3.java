@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,13 +21,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import dbAll.CustomReservation3FellowVO;
+import dbAll.CustomReservation3VO;
+
 public class CustomReservation3 extends JPanel implements ActionListener{
 	Font fnt = new Font("굴림체",Font.BOLD,14);
 	Font titleFnt = new Font("굴림체",Font.BOLD,24);
 	JPanel main = new JPanel();
 	JPanel wrapPane = new JPanel();
 		JPanel lblPane= new JPanel();
-			JLabel titleLbl = new JLabel("예약자의 정보");
+			JLabel titleLbl = new JLabel("예약자 정보입력");
 			JPanel hanPane = new JPanel();
 				JLabel hanLbl = new JLabel("예약자 성명(한)");
 				JTextField hanField = new JTextField(30);
@@ -62,14 +67,20 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 			JPanel checkPane = new JPanel();
 				JCheckBox checkBox = new JCheckBox();
 				JLabel checkStr = new JLabel("해당 정보를 맞게 입력하셨나요? 위 내용은 예약 완료 후 변경이 불가합니다");
+				JLabel checkStr2 = new JLabel("정보 변경을 희망할 경우 예약취소를 하시고 다시 시도해주시기 바랍니다");
 				int c = 0;
 			JPanel buttonPane = new JPanel();
-				JButton saveBtn = new JButton("임시저장");
 				JButton nextBtn = new JButton("다음단계");
 				JButton cancelBtn = new JButton("예약취소");
 		JPanel[] pane = {hanPane,engPane,passportPane,passEndPane,birthPane,telPane,emailPane};
 		JLabel[] lbl = {hanLbl,engLbl,passportLbl,passEndLbl,birthLbl,telLbl,emailLbl};
 		JTextField[] tf = {hanField,engField,passportField,passEndField,birthField,telField,emailField};
+		
+		static int nextCheck = 0; // 동승자 예약까지 하기위해 next버튼 누른 횟수를 저장한다.
+		int count ;
+		
+		static List<CustomReservation3FellowVO> fellowLst = new ArrayList<CustomReservation3FellowVO>();
+		static List<CustomReservation3VO> lst = new ArrayList<CustomReservation3VO>();
 	public CustomReservation3() {
 		setLayout(new BorderLayout());
 		add(main);
@@ -128,18 +139,21 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 			checkPane.setLayout(new BorderLayout(5,0));
 			checkPane.add("West",checkBox);
 				checkBox.setBackground(Color.white);
-			checkPane.add("Center",checkStr);
+			JPanel checkLblPane = new JPanel();
+			checkPane.add("Center",checkLblPane);
+				checkLblPane.setBackground(Color.white);
+				checkLblPane.add(checkStr);
 				checkStr.setHorizontalAlignment(JLabel.RIGHT);
 				checkStr.setBackground(Color.white);
 				checkStr.setFont(fnt);
+				checkLblPane.add(checkStr2);
+				checkStr2.setHorizontalAlignment(JLabel.RIGHT);
+				checkStr2.setBackground(Color.white);
+				checkStr2.setFont(fnt);
 		
 		wrapPane.add(buttonPane);
 			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER,50,10));
 			buttonPane.setBackground(Color.white);
-				buttonPane.add(saveBtn);
-					saveBtn.setFont(fnt);
-					saveBtn.setForeground(Color.white);
-					saveBtn.setBackground(new Color(0,130,255));
 				buttonPane.add(cancelBtn);
 					cancelBtn.setFont(fnt);
 					cancelBtn.setForeground(Color.white);
@@ -154,8 +168,8 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 		setBackground(Color.white);
 		setSize(1000,800);
 		setVisible(true);
+
 		checkBox.addActionListener(this);
-		saveBtn.addActionListener(this);
 		cancelBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
 	}
@@ -164,15 +178,86 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 		Object obj = ae.getSource();
 		if(obj instanceof JButton) {
 			String btn = ae.getActionCommand();
-			if(btn.equals("임시저장")) {
+			if(btn.equals("예약취소")) {
+				// 전부 초기화
+				for(int i=0; i<tf.length; i++) {
+					tf[i].setText("");
+				}
+				setTrue();
+				lst.removeAll(lst);
+				fellowLst.removeAll(fellowLst);
+				titleLbl.setText("예약자 정보입력");
+				hanLbl.setText("예약자 이름(한글)");
+				engLbl.setText("예약자 이름(영어)");
+				checkBox.setSelected(false);
+				nextBtn.setEnabled(false);
+				c=0;
+				nextCheck=0;
 				
-			} else if(btn.equals("예약취소")) {
 				this.setVisible(false);
 				CustomFrame.plan.setVisible(true);
 			} else if(btn.equals("다음단계")) {
-				this.setVisible(false);
-				CustomFrame.reservation4.setVisible(true);
-				CustomFrame.centerPane.add(CustomFrame.reservation4);
+				count = CustomReservation.humanCount;
+				if(nextCheck==0 && nextCheck < count) {
+					// 다음 눌렀느데 count가 인원수가 nextcheck랑 동일하면 다음화면 이동
+					if( (nextCheck +1) == count) {
+						
+						lst.removeAll(lst);
+						bookingRegist(lst);	
+						
+						setFalse();
+						this.setVisible(false);
+						// 다음을 누르면 reservation4를 세팅한다
+						CustomFrame.reservation4.setStartSeatPaint();
+						
+						CustomFrame.reservation4.setVisible(true);
+						CustomFrame.centerPane.add(CustomFrame.reservation4);
+					} else { // 아니라면 ++;
+						// 리스트에 담는다
+					
+						bookingRegist(lst);
+						// 전부 초기화
+						for(int i=0; i<tf.length; i++) {
+							tf[i].setText("");
+						}
+						checkBox.setSelected(false);
+						nextBtn.setEnabled(false);
+						c=0;
+						titleLbl.setText("동승자 정보입력");
+						hanLbl.setText("동승자 이름(한글)");
+						engLbl.setText("동승자 이름(영어)");
+						nextCheck++;
+					}
+					
+				} else if(nextCheck < count) {
+					if((nextCheck+1) == count) {
+						
+						if(!(fellowLst.size()==(count-1))) {
+							bookingFellowRegist(fellowLst);	
+						}
+						
+						setFalse();
+						this.setVisible(false);
+						// 다음을 누르면 reservation4를 세팅한다
+						CustomFrame.reservation4.setStartSeatPaint();
+						
+						CustomFrame.reservation4.setVisible(true);
+						CustomFrame.centerPane.add(CustomFrame.reservation4);
+						
+					} else {
+						bookingFellowRegist(fellowLst);
+						for(int i=0; i<tf.length; i++) {
+							tf[i].setText("");
+						}
+						setTrue();
+						checkBox.setSelected(false);
+						nextBtn.setEnabled(false);
+						c=0; 
+						nextCheck++;
+					}
+				} 
+
+				
 			}
 		}
 		if(obj instanceof JCheckBox) {
@@ -185,5 +270,68 @@ public class CustomReservation3 extends JPanel implements ActionListener{
 			}
 		}
 	}
-
+	// 예약자 정보 입력
+	public void bookingRegist(List<CustomReservation3VO> lst) {
+		String han = hanField.getText();
+		String eng = engField.getText();
+		String pas = passportField.getText();
+		String pasE = passEndField.getText();
+		String bir = birthField.getText();
+		String tel = telField.getText();
+		String email = emailField.getText();
+		String nation = (String) nationCombo.getSelectedItem();
+		String gender = (String) genderCombo.getSelectedItem();
+		CustomReservation3VO vo = new CustomReservation3VO(han,eng,pas,pasE,bir,tel,email,nation,gender);
+		lst.add(vo);
+	}
+	
+	// 동승자 정보 입력
+	public void bookingFellowRegist(List<CustomReservation3FellowVO> fellowlst) {
+		String han = hanField.getText();
+		String eng = engField.getText();
+		String pas = passportField.getText();
+		String pasE = passEndField.getText();
+		String bir = birthField.getText();
+		String tel = telField.getText();
+		String email = emailField.getText();
+		String nation = (String) nationCombo.getSelectedItem();
+		String gender = (String) genderCombo.getSelectedItem();
+		CustomReservation3FellowVO vo = new CustomReservation3FellowVO(han,eng,pas,pasE,bir,tel,email,nation,gender);
+		fellowlst.add(vo);
+	}
+	// 만약, 인원수가 변동이 있어서 줄어든다? 그러면 모두다 초기화하고 다시 받아라
+	public void replaceCount() {
+		setTrue();
+		// 전부 초기화
+		for(int i=0; i<tf.length; i++) {
+			tf[i].setText("");
+		}
+		lst.removeAll(lst);
+		fellowLst.removeAll(fellowLst);
+		titleLbl.setText("예약자 정보입력");
+		hanLbl.setText("예약자 이름(한글)");
+		engLbl.setText("예약자 이름(영어)");
+		checkBox.setSelected(false);
+		nextBtn.setEnabled(false);
+		c=0;
+		nextCheck = 0;
+	}
+	
+	// 모든 필드, 콤보를 트루로 다시 바꾼다
+	public void setTrue() {
+		for(int i=0; i<tf.length; i++) {
+			tf[i].setEnabled(true);
+		}
+		nationCombo.setEnabled(true);
+		genderCombo.setEnabled(true);
+	}
+	
+	// 모든 필드, 콤보를 펄스로 다시 바꾼다
+	public void setFalse() {
+		for(int i=0; i<tf.length; i++) {
+			tf[i].setEnabled(false);
+		}
+		nationCombo.setEnabled(false);
+		genderCombo.setEnabled(false);
+	}
 }

@@ -29,7 +29,7 @@ public class CustomFrame extends JFrame implements ActionListener, MouseListener
 		JPanel northNPane = new JPanel();
 		JPanel northCPane = new JPanel();
 		JPanel northSPane = new JPanel();
-		JLabel hiLbl = new JLabel("______님 어서오세요");
+		static JLabel hiLbl = new JLabel("______님 어서오세요");
 		JLabel resLbl = new JLabel("예 약 하 기");
 		JLabel searchLbl = new JLabel("예 약 조 회");
 		JLabel mypageLbl = new JLabel("마 이 페 이 지");
@@ -47,7 +47,7 @@ public class CustomFrame extends JFrame implements ActionListener, MouseListener
 	static JPanel centerPane = new JPanel();
 		static CustomPlan plan = new CustomPlan(); //항공일정
 		static CustomReservation reservation = new CustomReservation(); // 예약하기
-			static CustomReservation2 reservation2 = new CustomReservation2(reservation.startDateField.getText(),reservation.arriveDateField.getText());
+			static CustomReservation2 reservation2 = new CustomReservation2();
 			static CustomReservation3 reservation3 = new CustomReservation3();
 			static CustomReservation4 reservation4 = new CustomReservation4();
 			static CustomReservation5 reservation5 = new CustomReservation5();

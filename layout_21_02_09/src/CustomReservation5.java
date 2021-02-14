@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,12 +23,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomReservation3FellowVO;
+import dbAll.CustomReservation3VO;
+import dbAll.CustomReservation4DAO;
+import dbAll.CustomReservation4VO;
+
 public class CustomReservation5 extends JPanel implements MouseListener, ItemListener{
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font titleFnt = new Font("굴림체", Font.BOLD, 32);
 	
 	JLabel titleLbl1 = new JLabel("선택 항공 내역");
-	String flightStr[] = {"출발지", "도착지", "출발일", "도착일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
+	String flightStr[] = {"출발지", "도착지", "출발일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
 	JTable table1;
 	JScrollPane sp1;
 	DefaultTableModel model1;
@@ -42,7 +49,7 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 	JLabel lbl2 = new JLabel("해당 정보를 확인하세요. 위 내용은 예약 완료 후 변경이 불가합니다.");
 	
 	JLabel titleLbl3 = new JLabel("결제 내역");
-	String paymentStr[] = {"구분", "결제예정금액"};
+	String paymentStr[] = {"결제예정금액"};
 	JTable table3;
 	JScrollPane sp3;
 	DefaultTableModel model3;
@@ -136,6 +143,131 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 		cancelBtn.addMouseListener(this);
 	}
 		
+	public void getData() {
+		CustomReservation4VO vo4 = new CustomReservation4VO();
+		CustomReservation3VO vo3 = new CustomReservation3VO();
+		CustomReservation3FellowVO voFellow3 = new CustomReservation3FellowVO();
+		String meal ="";
+		String seatno ="";
+		
+		// 출발지, 도착지, 출발일, 출발시간, 도착시간, 항공편명, 좌석, 운임
+		String startCountry = (String) CustomReservation.startCombo.getSelectedItem();//출발지
+		String startEndCountry = (String) CustomReservation.arriveCombo.getSelectedItem();//도착지
+		String startDate = CustomReservation.startDateField.getText(); // 출발일
+		String startTime = CustomReservation2.startTime; // 출발시간
+		String startEndTime = CustomReservation2.startEndTime; // 도착시간
+		String startResno = CustomReservation2.startSelect; // 출발 항공편명
+		String startSeatNo = "";
+		
+		if(CustomReservation.humanCount==1) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo();	
+			}
+		} else if(CustomReservation.humanCount==2) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2();
+			}
+		} else if(CustomReservation.humanCount==3) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3();	
+			}
+		} else if(CustomReservation.humanCount==4) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4();			
+			}
+		} else if(CustomReservation.humanCount==5) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4() +", "+ vo4.getSeatNo5();
+			}
+		}
+		
+		int startFare = CustomReservation2.startFare;
+		
+		// 출발지, 도착지, 출발일, 출발시간, 도착시간, 항공편명, 좌석, 운임
+		String arriveCountry = (String) CustomReservation.arriveCombo.getSelectedItem();//출발지
+		String arriveEndCountry = (String) CustomReservation.startCombo.getSelectedItem();//도착지
+		String arriveDate = CustomReservation.arriveDateField.getText(); // 도착지에서 출발일
+		String arriveTime = CustomReservation2.arriveTime; // 도착지에서 출발시간
+		String arriveEndTime = CustomReservation2.arriveendTime;
+		String arriveResno = CustomReservation2.arriveSelect; // 출발 항공편명
+		String arriveSeatNo = "";
+		if(CustomReservation.humanCount==1) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i); 
+				arriveSeatNo = vo4.getSeatNo();	
+			}
+		} else if(CustomReservation.humanCount==2) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2();
+			}
+		} else if(CustomReservation.humanCount==3) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3();
+			}
+		} else if(CustomReservation.humanCount==4) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4();
+			}
+		} else if(CustomReservation.humanCount==5) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4() +", "+ vo4.getSeatNo5();
+			}
+		}
+		
+		
+		////////////////////////////////////// 예약정보/////////////////////////////////
+		
+		int arriveFare = CustomReservation2.arriveFare;
+		Object startflightlst[] = {startCountry,startEndCountry,startDate,startTime,startEndTime,startResno,startSeatNo,startFare};
+		Object arriveflightlst[] = {arriveCountry,arriveEndCountry,arriveDate,arriveTime,arriveEndTime,arriveResno,arriveSeatNo,arriveFare};
+		model1.addRow(startflightlst);
+		model1.addRow(arriveflightlst);
+		
+		//성명(한), 성명(영), 여권번호, 여권만료일, 발행국가, 생년월일, 연락처, 이메일
+		for(int i=0; i<CustomReservation3.lst.size();i++){
+			vo3 = CustomReservation3.lst.get(i);
+			Object Data1[] = {vo3.getUser_name(),vo3.getUser_ename(),vo3.getUser_passno(),vo3.getUser_exdate(),vo3.getUser_nation(),vo3.getUser_birth()
+					,vo3.getUser_tel(),vo3.getUser_email()};
+			model2.setRowCount(0);
+			model2.addRow(Data1);
+		}
+		for(int i=0; i<CustomReservation3.fellowLst.size();i++) {
+			voFellow3 = CustomReservation3.fellowLst.get(i);
+			Object Data2[] = {voFellow3.getCom_name(),voFellow3.getCom_ename(),voFellow3.getCom_passno(),voFellow3.getCom_exdate(),voFellow3.getCom_nation()
+					,voFellow3.getCom_birth(),voFellow3.getCom_tel(),voFellow3.getCom_email()};
+			model2.addRow(Data2);
+		}
+		
+		if(CustomReservation.rdb.equals("왕복")) {
+			Object payResurt[] = {(startFare * Integer.valueOf(CustomReservation.humanCount)) +
+				(arriveFare * Integer.valueOf(CustomReservation.humanCount))};
+			model3.setRowCount(0);
+			model3.addRow(payResurt);
+		} else if(CustomReservation.rdb.equals("편도")) {
+			Object payResurt[] = {startFare * Integer.valueOf(CustomReservation.humanCount)};
+			model3.setRowCount(0);
+			model3.addRow(payResurt);
+		}
+		
+		
+		
+	}
+	
+	
+	
 	@Override
 	public void itemStateChanged(ItemEvent ie) {
 		if(ie.getStateChange()==ItemEvent.SELECTED) {
