@@ -8,6 +8,70 @@ public class CustomBookingChange3DAO extends DBConn {
 	public CustomBookingChange3DAO() {
 		
 	}
+	public int getMileage(String passNo) {
+		//현재 누적 마일리지 가져오기
+		int mileage = 0;
+		try {
+			getConn();
+			sql = "select mileage from ac_user where user_passno=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, passNo);
+			
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				mileage = rs.getInt(1);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return mileage;
+	}
+	public int mileageUpdate(CustomBookingChange3VO vo) {
+		int result = 0;
+		try {
+			getConn();
+			//								((누적-초기)+변경후)
+			sql = "update ac_user set mileage=((?-?)+?) where user_passno=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, vo.getMileageTotal());
+			pstmt.setInt(2, vo.getMileageOld());
+			pstmt.setInt(3, vo.getMileageNew());
+			pstmt.setString(4, vo.getUserPassNo());
+			
+			result = pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return result;
+	}
+	
+	public int bookingUpdate(CustomBookingChange3VO vo) {
+		int result = 0;
+		try {
+			getConn();
+			sql = "update ac_reservation set flightno=? where resno=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getNewFlightNum());
+			pstmt.setString(2, vo.getResNo());
+			
+			result = pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return result;
+	}
 	public List<CustomBookingChange3VO> getTable1(String newFlight, String resNo){
 		List<CustomBookingChange3VO> lst = new ArrayList<CustomBookingChange3VO>();
 		try {
@@ -80,6 +144,47 @@ public class CustomBookingChange3DAO extends DBConn {
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return lst;
+	}
+	
+	public List <CustomBookingChange3VO> getTable3(String oldFlight, String newFlight){
+		List<CustomBookingChange3VO> lst = new ArrayList<CustomBookingChange3VO>();
+		
+		try {
+			getConn();
+			sql = "select flightno, fare "
+					+ "from ( "
+					+ "select flightno, fare, "
+					+ "    LAG(flightno) over (order by flightno) 모르겠다, "
+					+ "    LAG(fare) over (order by fare) 음"
+					+ "    from ac_flight where flightno in(?, ?) "
+					+ "    order by flightno ) "
+					+ "    where flightno in( ? , ?)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, oldFlight);
+			pstmt.setString(2, newFlight);
+			pstmt.setString(3, oldFlight);
+			pstmt.setString(4, newFlight);
+			
+			
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				CustomBookingChange3VO vo = new CustomBookingChange3VO(
+						rs.getString(1),
+						rs.getString(2));
+				
+				lst.add(vo);
+				
+			}
+			
+		}catch(Exception ae) {
+			 ae.printStackTrace();
 		}finally {
 			dbClose();
 		}

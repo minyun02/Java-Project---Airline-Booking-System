@@ -12,12 +12,12 @@ public class EmpFlightChangeDAO extends DBConn{
 		int result = 0;
 		try {
 			getConn();
-			sql = "update ac_flight set flight_state='CANCEL' where flightNo=? AND brdDate=?";
+			sql = "update ac_flight set flight_state='CANCEL' where flightNo=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, vo.getFlightno_r());
-			pstmt.setString(2, vo.getBrdDate_r());
+			
 			
 			result = pstmt.executeUpdate();
 		}catch(Exception e) {
@@ -31,13 +31,13 @@ public class EmpFlightChangeDAO extends DBConn{
 		int result = 0;
 		try {
 			getConn();
-			sql = "update ac_flight set depTime=?, desTime=?, flight_state='DELAY' where flightNo=? AND brdDate=?";
+			sql = "update ac_flight set depTime=?, desTime=?, flight_state='DELAY' where flightNo=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, vo.getDepTime());
 			pstmt.setString(2, vo.getDesTime());
 			pstmt.setString(3, vo.getFlightno_r());
-			pstmt.setString(4, vo.getBrdDate_r());
+			
 			
 			result = pstmt.executeUpdate();
 		}catch(Exception e) {

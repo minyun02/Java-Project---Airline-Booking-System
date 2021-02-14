@@ -65,7 +65,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	
 	static String getDep;
 	static String getDes;
-	static String getFlight;
+	static String getFlight;//기존 예약 항공편명
 	static String getResNo;
 	
 	public CustomBookingChange1() {

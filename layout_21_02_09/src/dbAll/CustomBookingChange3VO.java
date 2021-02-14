@@ -18,7 +18,19 @@ public class CustomBookingChange3VO {
 	private String userNation;
 	private String userBirth;
 	private String userTel;
-	private String userEmail;
+	private String userEmail;//table2
+	
+	private String oldFlight;
+	private String oldFare;
+	private String newFlight;
+	private String newFare;//table3
+	
+	private String newFlightNum;//항공편명 업데이트
+	private String resNo;
+	
+	private int mileageTotal;//마일리지 업데이트
+	private int mileageOld;
+	private int mileageNew;
 	
 	public CustomBookingChange3VO() {
 		
@@ -37,6 +49,7 @@ public class CustomBookingChange3VO {
 		this.fare=fare;
 	}
 	public CustomBookingChange3VO(String gender, String userName, String userEname, String userPassNo, String userExdate, String userNation, String userBirth, String userTel, String userEmail) {
+		//table2
 		this.gender=gender;
 		this.userName=userName;
 		this.userEname=userEname;
@@ -47,9 +60,78 @@ public class CustomBookingChange3VO {
 		this.userTel=userTel;
 		this.userEmail=userEmail;
 	}
+//	public CustomBookingChange3VO(String oldFlight, String oldFare, String newFlight, String newFare) {
+//		this.oldFlight=oldFlight;
+//		this.oldFare=oldFare;
+//		this.newFlight=newFlight;
+//		this.newFare=newFare;
+//	}
+	public CustomBookingChange3VO(String oldFlight, String oldFare) {
+		this.oldFlight=oldFlight;
+		this.oldFare=oldFare;
+//		this.newFlight=newFlight;
+//		this.newFare=newFare;
+	}
 	
 	
 	
+	
+	
+	
+	public int getMileageTotal() {
+		return mileageTotal;
+	}
+	public void setMileageTotal(int mileageTotal) {
+		this.mileageTotal = mileageTotal;
+	}
+	public int getMileageOld() {
+		return mileageOld;
+	}
+	public void setMileageOld(int mileageOld) {
+		this.mileageOld = mileageOld;
+	}
+	public int getMileageNew() {
+		return mileageNew;
+	}
+	public void setMileageNew(int mileageNew) {
+		this.mileageNew = mileageNew;
+	}
+	public String getResNo() {
+		return resNo;
+	}
+	public void setResNo(String resNo) {
+		this.resNo = resNo;
+	}
+	public String getNewFlightNum() {
+		return newFlightNum;
+	}
+	public void setNewFlightNum(String newFlightNum) {
+		this.newFlightNum = newFlightNum;
+	}
+	public String getOldFlight() {
+		return oldFlight;
+	}
+	public void setOldFlight(String oldFlight) {
+		this.oldFlight = oldFlight;
+	}
+	public String getOldFare() {
+		return oldFare;
+	}
+	public void setOldFare(String oldFare) {
+		this.oldFare = oldFare;
+	}
+	public String getNewFlight() {
+		return newFlight;
+	}
+	public void setNewFlight(String newFlight) {
+		this.newFlight = newFlight;
+	}
+	public String getNewFare() {
+		return newFare;
+	}
+	public void setNewFare(String newFare) {
+		this.newFare = newFare;
+	}
 	public String getGender() {
 		return gender;
 	}

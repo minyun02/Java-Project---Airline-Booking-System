@@ -56,7 +56,7 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 	//이벤트용 변수
 		int row = 0; //테이블에서 눌린 행이 1개가 아닌걸 확인하는 용도
 		
-		static String newFlightNum;
+		static String newFlightNum; //변경한 항공편명
 		
 		
 	public CustomBookingChange2() {
@@ -187,6 +187,7 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 					CustomFrame.bookingChange3.setVisible(true);
 					CustomFrame.bookingChange3.table1Print();
 					CustomFrame.bookingChange3.table2Print();
+					CustomFrame.bookingChange3.table3Print();
 					CustomFrame.centerPane.add(CustomFrame.bookingChange3);
 				}
 			}
@@ -221,6 +222,7 @@ public class CustomBookingChange2 extends JPanel  implements ActionListener,Mous
 			arriveDate.setText((String)model.getValueAt(rowSelected, 1));
 			
 			newFlightNum = (String)model.getValueAt(rowSelected, 3);
+			System.out.println("변경한항공편->"+newFlightNum);
 		}
 		
 	}
