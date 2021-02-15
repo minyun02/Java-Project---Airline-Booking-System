@@ -467,11 +467,14 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 	public void setStartSeatPaint() {
 		// start 날짜
 		String startD = CustomReservation.startDateField.getText().substring(2,10);
+		System.out.println("출발하는 날짜 고른거->"+startD);
 		String startFlightno = CustomReservation2.startSelect;
+		System.out.println("출발하느날짜 비행편->"+startFlightno);
 		CustomReservation4DAO dao = new CustomReservation4DAO();
 		List<CustomReservation4VO> lst = dao.startSeat(startFlightno, startD);
 		for(int i = 0; i<lst.size(); i++) {
 			CustomReservation4VO vo = lst.get(i);
+			System.out.println("좌석이 어떤게 받아져왔나----->"+vo);
 			for(int j=0; j<btnA.length; j++) {
 				if(btnA[j].getText().equals(vo.getSeatNo())) {
 					btnA[j].setBackground(Color.black);
@@ -498,6 +501,7 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 				
 			}
 		}
+		System.out.println("???????????????????????????????????????????????????????????????????");
 	}
 	
 	// 복귀 시트 선택

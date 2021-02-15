@@ -284,7 +284,6 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 							CustomFrame.bookingChange4.table2Print();
 							
 							
-							
 							this.setVisible(false);
 							CustomFrame.bookingChange4.setVisible(true);
 							CustomFrame.centerPane.add(CustomFrame.bookingChange4);
