@@ -45,8 +45,6 @@ public class CustomReservation4DAO extends DBConn{
 			pstmt.setString(1, arriveFlightno);
 			pstmt.setString(2, arriveDate);
 			
-
-			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
