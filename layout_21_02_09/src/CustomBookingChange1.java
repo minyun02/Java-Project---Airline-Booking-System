@@ -18,8 +18,6 @@ import javax.swing.table.DefaultTableModel;
 
 import dbAll.CustomBookingChange1DAO;
 import dbAll.CustomBookingChange1VO;
-import dbAll.CustomFrameDAO;
-import dbAll.CustomFrameVO;
 
 public class CustomBookingChange1 extends JPanel implements ActionListener, MouseListener {
 	static String userName = "";

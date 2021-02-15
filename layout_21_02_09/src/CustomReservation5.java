@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,12 +23,19 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomReservaion6DAO;
+import dbAll.CustomReservation3FellowVO;
+import dbAll.CustomReservation3VO;
+import dbAll.CustomReservation4DAO;
+import dbAll.CustomReservation4VO;
+import dbAll.CustomReservation6VO;
+
 public class CustomReservation5 extends JPanel implements MouseListener, ItemListener{
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font titleFnt = new Font("굴림체", Font.BOLD, 32);
 	
 	JLabel titleLbl1 = new JLabel("선택 항공 내역");
-	String flightStr[] = {"출발지", "도착지", "출발일", "도착일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
+	String flightStr[] = {"출발지", "도착지", "출발일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
 	JTable table1;
 	JScrollPane sp1;
 	DefaultTableModel model1;
@@ -42,7 +51,7 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 	JLabel lbl2 = new JLabel("해당 정보를 확인하세요. 위 내용은 예약 완료 후 변경이 불가합니다.");
 	
 	JLabel titleLbl3 = new JLabel("결제 내역");
-	String paymentStr[] = {"구분", "결제예정금액"};
+	String paymentStr[] = {"결제예정금액"};
 	JTable table3;
 	JScrollPane sp3;
 	DefaultTableModel model3;
@@ -59,6 +68,11 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 	int allSelected = 0;
 	int paymentWindowState = 0;
 	int paymentState = 0;
+	
+	
+	// 결제창에 넘길 값
+	
+	int result = 0;
 	public CustomReservation5() {
 		setLayout(null);
 		this.setBackground(Color.white);
@@ -136,6 +150,133 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 		cancelBtn.addMouseListener(this);
 	}
 		
+	public void getData() {
+		CustomReservation4VO vo4 = new CustomReservation4VO();
+		CustomReservation3VO vo3 = new CustomReservation3VO();
+		CustomReservation3FellowVO voFellow3 = new CustomReservation3FellowVO();
+		
+		// 출발지, 도착지, 출발일, 출발시간, 도착시간, 항공편명, 좌석, 운임
+		String startCountry = (String) CustomReservation.startCombo.getSelectedItem();//출발지
+		String startEndCountry = (String) CustomReservation.arriveCombo.getSelectedItem();//도착지
+		String startDate = CustomReservation.startDateField.getText(); // 출발일
+		String startTime = CustomReservation2.startTime; // 출발시간
+		String startEndTime = CustomReservation2.startEndTime; // 도착시간
+		String startResno = CustomReservation2.startSelect; // 출발 항공편명
+		String startSeatNo = "";
+		
+		if(CustomReservation.humanCount==1) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo();	
+			}
+		} else if(CustomReservation.humanCount==2) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2();
+			}
+		} else if(CustomReservation.humanCount==3) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3();	
+			}
+		} else if(CustomReservation.humanCount==4) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4();			
+			}
+		} else if(CustomReservation.humanCount==5) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.onelst.get(i); 
+				startSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4() +", "+ vo4.getSeatNo5();
+			}
+		}
+		
+		int startFare = CustomReservation2.startFare;
+		
+		// 출발지, 도착지, 출발일, 출발시간, 도착시간, 항공편명, 좌석, 운임
+		String arriveCountry = (String) CustomReservation.arriveCombo.getSelectedItem();//출발지
+		String arriveEndCountry = (String) CustomReservation.startCombo.getSelectedItem();//도착지
+		String arriveDate = CustomReservation.arriveDateField.getText(); // 도착지에서 출발일
+		String arriveTime = CustomReservation2.arriveTime; // 도착지에서 출발시간
+		String arriveEndTime = CustomReservation2.arriveendTime;
+		String arriveResno = CustomReservation2.arriveSelect; // 출발 항공편명
+		String arriveSeatNo = "";
+		if(CustomReservation.humanCount==1) {
+			for(int i=0; i<CustomReservation4.onelst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i); 
+				arriveSeatNo = vo4.getSeatNo();	
+			}
+		} else if(CustomReservation.humanCount==2) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2();
+			}
+		} else if(CustomReservation.humanCount==3) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3();
+			}
+		} else if(CustomReservation.humanCount==4) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4();
+			}
+		} else if(CustomReservation.humanCount==5) {
+			for(int i=0; i<CustomReservation4.roundlst.size(); i++) {
+				vo4 = CustomReservation4.roundlst.get(i);
+				arriveSeatNo = vo4.getSeatNo() + ", "+ vo4.getSeatNo2() +", "+ vo4.getSeatNo3() +
+						", " +vo4.getSeatNo4() +", "+ vo4.getSeatNo5();
+			}
+		}
+		int arriveFare = CustomReservation2.arriveFare;
+		Object startflightlst[] = {startCountry,startEndCountry,startDate,startTime,startEndTime,startResno,startSeatNo,startFare};
+		Object arriveflightlst[] = {arriveCountry,arriveEndCountry,arriveDate,arriveTime,arriveEndTime,arriveResno,arriveSeatNo,arriveFare};
+		model1.setRowCount(0);
+		model1.addRow(startflightlst);
+		model1.addRow(arriveflightlst);
+		
+		////////////////////////////////////// 예약정보/////////////////////////////////
+		
+		
+		
+		//성명(한), 성명(영), 여권번호, 여권만료일, 발행국가, 생년월일, 연락처, 이메일
+		for(int i=0; i<CustomReservation3.lst.size();i++){
+			vo3 = CustomReservation3.lst.get(i);
+			Object Data1[] = {vo3.getUser_name(),vo3.getUser_ename(),vo3.getUser_passno(),vo3.getUser_exdate(),vo3.getUser_nation(),vo3.getUser_birth()
+					,vo3.getUser_tel(),vo3.getUser_email()};
+			model2.setRowCount(0);
+			model2.addRow(Data1);
+		}
+		for(int i=0; i<CustomReservation3.fellowLst.size();i++) {
+			voFellow3 = CustomReservation3.fellowLst.get(i);
+			Object Data2[] = {voFellow3.getCom_name(),voFellow3.getCom_ename(),voFellow3.getCom_passno(),voFellow3.getCom_exdate(),voFellow3.getCom_nation()
+					,voFellow3.getCom_birth(),voFellow3.getCom_tel(),voFellow3.getCom_email()};
+			model2.addRow(Data2);
+		}
+		
+		if(CustomReservation.rdb.equals("왕복")) {
+			Object payResurt[] = {(startFare * Integer.valueOf(CustomReservation.humanCount)) +
+				(arriveFare * Integer.valueOf(CustomReservation.humanCount))};
+			model3.setRowCount(0);
+			model3.addRow(payResurt);
+			// 결제창에 넘겨줄 값
+			result = (startFare * Integer.valueOf(CustomReservation.humanCount)) +
+					(arriveFare * Integer.valueOf(CustomReservation.humanCount));
+		} else if(CustomReservation.rdb.equals("편도")) {
+			Object payResurt[] = {startFare * Integer.valueOf(CustomReservation.humanCount)};
+			model3.setRowCount(0);
+			model3.addRow(payResurt);
+		}
+		
+		
+		
+	}
+	
+	
+	
 	@Override
 	public void itemStateChanged(ItemEvent ie) {
 		if(ie.getStateChange()==ItemEvent.SELECTED) {
@@ -224,12 +365,12 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 		JLabel mileageLbl3 = new JLabel("등급명");
 		JLabel mileageLbl4 = new JLabel("보유 마일리지");
 		JLabel mileageLbl5 = new JLabel("3800");
-		JButton mileageBtn = new JButton("사용");
+//		JButton mileageBtn = new JButton("사용");
 		
-		JLabel finalPayLbl1 = new JLabel("최종 결제금액");
-		JLabel finalPayLbl2 = new JLabel("551200");
+//		JLabel finalPayLbl1 = new JLabel("최종 결제금액");
+//		JLabel finalPayLbl2 = new JLabel("551200");
 		
-		JLabel wonLbl2 = new JLabel("원");
+//		JLabel wonLbl2 = new JLabel("원");
 		
 		JButton payBtn = new JButton("결제");
 		JButton cancelBtn = new JButton("취소");
@@ -238,6 +379,9 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 			setLayout(null);
 			this.setBackground(Color.white);
 			
+			amountLbl2.setText(result+"");
+			mileageLbl2.setText((int)(result*0.01)+"");
+			mileageLbl5.setText(CustomMyPage.mileage+"");
 			
 			add(amountLbl1).setBounds(60,100, 80, 25); amountLbl1.setFont(fnt); 
 			add(amountLbl2).setBounds(200, 100, 100, 25);amountLbl2.setFont(fnt); 
@@ -258,13 +402,13 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 			//add(mileageLbl3).setBounds(270,190, 60, 25); mileageLbl3.setFont(fnt);
 			add(mileageLbl4).setBounds(60,220, 100,25); mileageLbl4.setFont(fnt);
 			add(mileageLbl5).setBounds(200,220, 80,25); mileageLbl5.setFont(fnt);
-			add(mileageBtn).setBounds(270,220, 65,25); mileageBtn.setFont(fnt);
-				mileageBtn.setBackground(new Color(0,130,255));
-				mileageBtn.setForeground(Color.white);
+//			add(mileageBtn).setBounds(270,220, 65,25); mileageBtn.setFont(fnt);
+//				mileageBtn.setBackground(new Color(0,130,255));
+//				mileageBtn.setForeground(Color.white);
 			
-			add(finalPayLbl1).setBounds(60,250, 100,25); finalPayLbl1.setFont(fnt);
-			add(finalPayLbl2).setBounds(200,250, 100,25); finalPayLbl2.setFont(fnt);
-			add(wonLbl2).setBounds(270,250, 20,25); wonLbl2.setFont(fnt);
+//			add(finalPayLbl1).setBounds(60,250, 100,25); finalPayLbl1.setFont(fnt);
+//			add(finalPayLbl2).setBounds(200,250, 100,25); finalPayLbl2.setFont(fnt);
+//			add(wonLbl2).setBounds(270,250, 20,25); wonLbl2.setFont(fnt);
 			add(payBtn).setBounds(75,320, 100, 30); payBtn.setFont(fnt);
 				payBtn.setBackground(new Color(0,130,255));
 				payBtn.setForeground(Color.white);
@@ -280,7 +424,7 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 			
 			//이벤트
 			paymentBox.addActionListener(this);
-			mileageBtn.addMouseListener(this);
+//			mileageBtn.addMouseListener(this);
 			payBtn.addMouseListener(this);
 			cancelBtn.addMouseListener(this);
 			addWindowListener(this);
@@ -315,26 +459,39 @@ public class CustomReservation5 extends JPanel implements MouseListener, ItemLis
 			if(obj instanceof JButton) {
 				String btnName = ((JButton) obj).getText();
 				if(btnName.equals("결제")) {
-					JOptionPane.showMessageDialog(this, "결제가 완료되었습니다");
-					this.setVisible(false);
-					CustomFrame.reservation5.setVisible(false);
-					CustomFrame.reservation6.setVisible(true);
-					CustomFrame.centerPane.add(CustomFrame.reservation6);
+					if(CustomFrame.reservation6.setData()==0) {
+						JOptionPane.showMessageDialog(this, "정보입력이 잘못되었습니다 \n 올바른 정보를 입력후 다시 결제 하시기 바랍니다");
+					} else {
+						JOptionPane.showMessageDialog(this, "결제가 완료되었습니다");
+						this.setVisible(false);
+						CustomFrame.reservation5.setVisible(false);
+						CustomFrame.reservation6.setVisible(true);
+						CustomFrame.reservation6.getData();
+						setMileage();
+						CustomFrame.centerPane.add(CustomFrame.reservation6);
+					}
 				}else if(btnName.endsWith("취소")){
 					JOptionPane.showMessageDialog(this, "결제를 취소했습니다");
 					this.setVisible(false);
 					
-				}else if(btnName.equals("사용")) {
-					int totalMinusMileage = (Integer.parseInt(finalPayLbl2.getText())
-							- (Integer.parseInt(mileageLbl5.getText())));
-					String finalPrice = (Integer.toString(totalMinusMileage));
-					finalPayLbl2.setText(finalPrice);
-					mileageBtn.setEnabled(false);
-					mileageLbl5.setText("0");
 				}
+//				else if(btnName.equals("사용")) {
+//					int totalMinusMileage = (Integer.parseInt(finalPayLbl2.getText())
+//							- (Integer.parseInt(mileageLbl5.getText())));
+//					String finalPrice = (Integer.toString(totalMinusMileage));
+//					finalPayLbl2.setText(finalPrice);
+////					mileageBtn.setEnabled(false);
+//					mileageLbl5.setText("0");
+//				}
 			}
 			
 		}
+	//// 멈춤
+		public void setMileage() {
+			CustomReservaion6DAO dao = new CustomReservaion6DAO();
+			dao.plusMileage(Integer.valueOf((int)(result*0.01)), AirlineMain.idField.getText());
+		}
+
 		
 		@Override
 		public void windowOpened(WindowEvent e) {

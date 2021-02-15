@@ -85,5 +85,7 @@ public class CustomReviseDAO extends DBConn{
 		}
 		return result;
 	}
+	
+//	public int ReviseChildDelete(String )
 
 }

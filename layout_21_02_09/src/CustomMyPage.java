@@ -7,10 +7,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import dbAll.CustomFrameDAO;
+import dbAll.CustomFrameVO;
+import dbAll.CustomMypageDAO;
+import dbAll.CustomMypageVO;
 
 public class CustomMyPage extends JPanel implements ActionListener{
 	Font fnt2 = new Font("굴림체",Font.BOLD,20);
@@ -26,6 +32,7 @@ public class CustomMyPage extends JPanel implements ActionListener{
 	JButton btn = new JButton("돌아가기");
 	
 	CustomPlan cp = new CustomPlan();
+	static int mileage = 0;
 	public CustomMyPage() {
 		setLayout(new BorderLayout());
 		main.setLayout(new GridBagLayout());
@@ -108,6 +115,9 @@ public class CustomMyPage extends JPanel implements ActionListener{
 		
 		main.setBackground(Color.white);
 		btn.addActionListener(this);
+		
+		getPrintInformation();
+		setCountPrint();
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
@@ -122,8 +132,28 @@ public class CustomMyPage extends JPanel implements ActionListener{
 	}
 	
 	public void getPrintInformation() {
+		CustomMypageDAO dao = new CustomMypageDAO();
+		String id = AirlineMain.idField.getText();
+		System.out.println("아이디가 왜 안받아지냐->"+id);
+		List<CustomMypageVO> name = dao.setMypage(id);
+		for(int i=0; i<name.size(); i++) {
+			CustomMypageVO vo = name.get(i);
+			memberLbl.setText(vo.getUser_name()+"님");
+			memberNumLbl.setText("회원번호 "+vo.getUserno());
+			mileNumLbl.setText(vo.getMileage()+"점");
+			mileage = vo.getMileage();
+		}
 		
-		memberLbl.setText("님");
+	}
+	
+	public void setCountPrint() {
+		CustomMypageDAO dao = new CustomMypageDAO();
+		String id = AirlineMain.idField.getText();
+		List<CustomMypageVO> lst = dao.setCount(id);
+		for(int i=0; i<lst.size(); i++) {
+			CustomMypageVO vo = lst.get(i);
+			boardingNumLbl.setText(vo.getCount()+"회");
+		}
 	}
 
 }

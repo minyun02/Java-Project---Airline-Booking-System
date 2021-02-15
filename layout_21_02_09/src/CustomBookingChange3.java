@@ -278,6 +278,13 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 						
 						if(oldFare>newFare) {
 							JOptionPane.showMessageDialog(this, "예약 변경이 완료되었습니다. \n 이용해주셔서 감사합니다.");
+													
+							
+							CustomFrame.bookingChange4.table1Print();
+							CustomFrame.bookingChange4.table2Print();
+							
+							
+							
 							this.setVisible(false);
 							CustomFrame.bookingChange4.setVisible(true);
 							CustomFrame.centerPane.add(CustomFrame.bookingChange4);

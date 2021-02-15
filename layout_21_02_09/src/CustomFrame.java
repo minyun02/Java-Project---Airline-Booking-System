@@ -24,7 +24,6 @@ import dbAll.CustomFrameDAO;
 import dbAll.CustomFrameVO;
 
 public class CustomFrame extends JFrame implements ActionListener, MouseListener ,Runnable{
-	static String loginName = "";
 	// 상단 패널
 	JPanel northPane = new JPanel();
 		JPanel northNPane = new JPanel();
@@ -48,7 +47,7 @@ public class CustomFrame extends JFrame implements ActionListener, MouseListener
 	static JPanel centerPane = new JPanel();
 		static CustomPlan plan = new CustomPlan(); //항공일정
 		static CustomReservation reservation = new CustomReservation(); // 예약하기
-			static CustomReservation2 reservation2 = new CustomReservation2(reservation.startDateField.getText(),reservation.arriveDateField.getText());
+			static CustomReservation2 reservation2 = new CustomReservation2();
 			static CustomReservation3 reservation3 = new CustomReservation3();
 			static CustomReservation4 reservation4 = new CustomReservation4();
 			static CustomReservation5 reservation5 = new CustomReservation5();
@@ -238,10 +237,6 @@ public class CustomFrame extends JFrame implements ActionListener, MouseListener
 		for(int i=0; i<name.size(); i++) {
 			CustomFrameVO vo = name.get(i);
 			hiLbl.setText(vo.getUser_name()+"님 어서오세요");
-//			System.out.println(vo.getUser_name());
-			loginName = vo.getUser_name();
-//			System.out.println(loginName);
-			
 		}
 	}
 	
