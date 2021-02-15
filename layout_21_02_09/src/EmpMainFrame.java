@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-import javax.swing.Action;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,8 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 
-import dbAll.CustomFrameDAO;
-import dbAll.CustomFrameVO;
+
 import dbAll.EmpFrameDAO;
 import dbAll.EmpFrameVO;
 
@@ -62,14 +61,16 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 			static EmpAirlinePlan plan = new EmpAirlinePlan(); // 로그인 화면시 일정
 			static EmpAirlineSales sales = new EmpAirlineSales(); // 매출관리
 			static EmpAirlineReservation reservation = new EmpAirlineReservation(); //예약관리
-				static EmpAirlineReservation1 reservation1 = new EmpAirlineReservation1(); //항공편을 선택하세요
+				static EmpAirlineReservation1 reservation1 = new EmpAirlineReservation1(); //항공편을 선택하세요 
+				static EmpAirlineReservation2 reservation2 = new EmpAirlineReservation2();
+				static EmpAirlineReservation3 reservation3 = new EmpAirlineReservation3();
 			static EmpFlightChange empFC = new EmpFlightChange();	 //항공편 조회
 			static EmpFlightAdd	flightAdd = new EmpFlightAdd(); // 항공편 추가
 			static EmpUserInfoManagement adminUser = new EmpUserInfoManagement();
 			static EmpInfoManagement adminInfo = new EmpInfoManagement();
 			static EmpBlacklistManagement adminBlack = new EmpBlacklistManagement();
 				
-		static JPanel visiblePane[] = {plan,sales,reservation,reservation1,empFC,flightAdd,adminUser,
+		static JPanel visiblePane[] = {plan,sales,reservation,reservation1,reservation2,reservation3,empFC,flightAdd,adminUser,
 				adminInfo,adminBlack};
 		
 	// 하단패널

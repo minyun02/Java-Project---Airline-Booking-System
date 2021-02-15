@@ -17,21 +17,31 @@ public class EmpReservationVO {
 	}
 	
 	public EmpReservationVO(String resno, String user_name, String user_birth, 
-						String user_tel, String dep, String flightno
-						
-							) {
-		
+						String user_tel, String dep, String flightno) {
 		this.resno = resno;
 		this.user_name = user_name;
 		this.user_birth = user_birth;
 		this.user_tel = user_tel;
 		this.dep = dep;
 		this.flightno = flightno;
-	
-	
-
-		
 	}
+	public EmpReservationVO(String resno, String user_name, String user_birth, 
+			String user_tel, String dep, String flightno, String brdDate) {
+
+		this.resno = resno;
+		this.user_name = user_name;
+		this.user_birth = user_birth;
+		this.user_tel = user_tel;
+		this.dep = dep;
+		this.flightno = flightno;
+		this.brdDate=brdDate;
+
+
+
+
+}
+	
+	
 
 	public String getResno() {
 		return resno;

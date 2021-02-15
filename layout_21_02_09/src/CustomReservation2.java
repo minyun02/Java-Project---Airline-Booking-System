@@ -55,7 +55,7 @@ public class CustomReservation2 extends JPanel implements ActionListener{
 					JScrollPane arriveSp = new JScrollPane(arriveTbl);
 					
 		JPanel btnPane = new JPanel();
-			JButton cancelBtn = new JButton("예약취소");
+			JButton cancelBtn = new JButton("변경취소");
 			JButton nextBtn = new JButton("다음단계");
 		JPanel test = new JPanel();
 	
@@ -85,6 +85,8 @@ public class CustomReservation2 extends JPanel implements ActionListener{
 						titleLbl.setHorizontalAlignment(JLabel.CENTER);
 						titleLbl.setFont(new Font("굴림체",Font.BOLD,24));
 						titleLbl.setBackground(Color.white);
+						
+						//
 					// 도시표시 패널
 					northPane.add(countryPane);
 						countryPane.setLayout(new FlowLayout(FlowLayout.CENTER,30,10));
@@ -127,6 +129,8 @@ public class CustomReservation2 extends JPanel implements ActionListener{
 					arriveTablePane.setBackground(Color.white);
 					arriveTablePane.add(arriveSp);
 					arriveSp.setFont(fnt);
+					
+					//
 			
 			centerPane.add("South",btnPane);
 				btnPane.setLayout(new FlowLayout(FlowLayout.CENTER,50,10));
@@ -153,7 +157,7 @@ public class CustomReservation2 extends JPanel implements ActionListener{
 		Object obj = ae.getSource();
 		if(obj instanceof JButton) {
 			String str = ae.getActionCommand();
-			if(str.equals("예약취소")) {
+			if(str.equals("변경취소")) {
 				this.setVisible(false);
 				CustomFrame.plan.setVisible(true);
 			} else if(str.equals("다음단계")) {

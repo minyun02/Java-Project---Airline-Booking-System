@@ -58,6 +58,7 @@ public class CustomBookingChange2 extends JPanel implements ActionListener,Mouse
 		// 전환되는 패널
 		add("North",changePane);
 		changePane.setLayout(new BorderLayout(200,30));
+		System.out.println("xptmtgm");
 		changePane.setBackground(Color.white);
 		changePane.add("North",new JLabel());
 		changePane.add("East",new JLabel());

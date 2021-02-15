@@ -64,9 +64,11 @@ public class EmpAirlinePlan extends JPanel{
 			centerPane.setLayout(new GridLayout(1,2));
 			centerPane.add(koreaPane);
 				koreaPane.setBackground(Color.white);
+				koreaTbl.getParent().setBackground(Color.white);
 				koreaPane.add(koreaSp);
 			centerPane.add(nationPane);
 				nationPane.setBackground(Color.white);
+				nationTbl.getParent().setBackground(Color.white);
 				nationPane.add(nationSp);
 			
 		

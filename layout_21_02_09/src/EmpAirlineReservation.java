@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Calendar;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -35,7 +37,8 @@ import dbAll.EmpReservationVO;
 
 
 
-public class EmpAirlineReservation extends JPanel implements ActionListener{
+
+public class EmpAirlineReservation extends JPanel implements ActionListener, MouseListener{
 
 	
 	Font fnt = new Font("굴림체",Font.BOLD,32);// 탑승자 정보
@@ -44,6 +47,7 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 	
 	JPanel centerPane = new JPanel();
 		JLabel reservationLbl = new JLabel("예약번호");
+			JTextField test = new JTextField(10);
 			JButton btn = new JButton("검색");
 		JLabel startLbl = new JLabel("출 발 지");
 			JButton btn1 = new JButton("검색");
@@ -59,7 +63,11 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 			     
 		 JTextField tf [] = {new JTextField(10), new JTextField(10),new JTextField(10),new JTextField(10)};	     
 			     
-
+//		 JLabel reservation = new JLabel("예약번호");
+		 
+		 
+		 
+		 
 	JPanel tablePane = new JPanel(new BorderLayout());	
 		JLabel passengerlbl = new JLabel("탑승자 정보");
 		JTable table;
@@ -76,7 +84,7 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 				
 	JPanel SouthPane = new JPanel(new BorderLayout()); 
 		JPanel btnPane = new JPanel();		
-			JButton modibtn = new JButton("수정");
+			JButton modibtn = new JButton("예약변경");
 			JLabel empty = new JLabel("      ");
 			JButton resetBtn = new JButton("초기화");
 			JLabel empty2 = new JLabel("      ");
@@ -88,6 +96,15 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 	int x, x1;
 	int calendarWindowTest = 0;
 	int clickCheck = 0;
+	
+	static String resNOtest;
+	static String dep;
+	static String fno;
+	
+	static String getDep;
+	static String getFlight;
+	static String getResNo;
+	
 
 	
 	public EmpAirlineReservation() {
@@ -103,6 +120,8 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 			centerPane.add(reservationLbl).setBounds(x,50,70,30);
 				reservationLbl.setFont(fnt3);
 			centerPane.add(tf[0]).setBounds(x1,50,150,30); 
+//			centerPane.add(reservation).setBounds(1,1,70,30);
+
 			centerPane.add(btn).setBounds(570,50,70,30);
 				btn.setFont(fnt3);btn.setForeground(Color.white);
 				btn.setBackground(new Color(255,128,128));btn.setBorder(new LineBorder(Color.white, 1, true));
@@ -110,6 +129,7 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 			centerPane.add(startLbl).setBounds(x,100,70,30);
 				startLbl.setFont(fnt3);
 			centerPane.add(tf[1]).setBounds(x1,100,150,30); 
+//			centerPane.add(test).setBounds(x1,100,150,30); 
 			centerPane.add(btn1).setBounds(570,100,70,30);
 				btn1.setFont(fnt3);	btn1.setForeground(Color.white);
 				btn1.setBackground(new Color(255,128,128));	btn1.setBorder(new LineBorder(Color.white, 1, true));
@@ -208,22 +228,27 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 		
 		
 		
-		
-//		table.addMouseListener(new MouseAdapter() {
-//			public void mouseReleased(MouseEvent me) { //JTable에서 클릭하면 이벤트생김
-//				//이벤트 발생버튼이마우스 인쪽 버튼이면
-//				if(me.getButton()==1) {
-//					// 선택된 행번호 가져오기
-//					int row = table.getSelectedRow(); // 행번호가져오기
-//					int col =table.getColumnCount(); //칸수 구하기
-//
-//						tf[0].setText((String)sales.getValueAt(row,1));
-//						tf[1].setText((String)sales.getValueAt(row,4));
-//						tf[2].setText((String)sales.getValueAt(row,5));
-//							
-//				}
-//			}
-//		});
+		///클릭할때마다 가져오기 웅앵
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent me) { //JTable에서 클릭하면 이벤트생김
+				//이벤트 발생버튼이마우스 인쪽 버튼이면
+				if(me.getButton()==1) {
+					// 선택된 행번호 가져오기
+					int row = table.getSelectedRow(); // 행번호가져오기
+					int col =table.getColumnCount(); //칸수 구하기
+
+						resNOtest=((String)sales.getValueAt(row,0));
+						dep=((String)sales.getValueAt(row, 4));
+						fno=((String)sales.getValueAt(row, 5));
+
+//						getDep = ((String)sales.getValueAt(row, 4));
+//						getFlight = ((String)sales.getValueAt(row, 5));
+//						getResNo = ((String)sales.getValueAt(row, 0));
+						
+							
+				}
+			}
+		});
 
 		startCalendar.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent me) {
@@ -234,6 +259,74 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 				 }
 			}
 		});
+	}
+	public void dateSearch() {
+		String dateWord = tf[3].getText();
+
+		if(dateWord.equals("")) {
+			JOptionPane.showMessageDialog(this, "검색어를 입력해 주세요");
+		}else {
+			EmpReservationDAO dao = new EmpReservationDAO();
+			List<EmpReservationVO> searchList = dao.getdateSearch(dateWord);
+			if(searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, dateWord+"의 검색 결과가 없습니다");
+			}else {
+				setNewTableList(searchList);
+			}
+			
+		}
+	}
+	
+	public void flightNoSearch() {
+		String searchflightNoWord = tf[2].getText();
+
+		if(searchflightNoWord.equals("")) {
+			JOptionPane.showMessageDialog(this, "검색어를 입력해 주세요");
+		}else {
+			EmpReservationDAO dao = new EmpReservationDAO();
+			List<EmpReservationVO> searchList = dao.getflightNoSearch(searchflightNoWord);
+			if(searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, searchflightNoWord+"의 검색 결과가 없습니다");
+			}else {
+				setNewTableList(searchList);
+			}
+			
+		}
+	}
+	
+	public void depSearch() {
+		String searchdepWord = tf[1].getText();
+
+		if(searchdepWord.equals("")) {
+			JOptionPane.showMessageDialog(this, "검색어를 입력해 주세요");
+		}else {
+			EmpReservationDAO dao = new EmpReservationDAO();
+			List<EmpReservationVO> searchList = dao.getDepSearchRecord(searchdepWord);
+			if(searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, searchdepWord+"의 검색 결과가 없습니다");
+			}else {
+				setNewTableList(searchList);
+			}
+			
+		}
+	}
+	
+	
+	public void reservationSearch() {
+		String searchReservationWord = tf[0].getText();
+
+		if(searchReservationWord.equals("")) {
+			JOptionPane.showMessageDialog(this, "검색어를 입력해 주세요");
+		}else {
+			EmpReservationDAO dao = new EmpReservationDAO();
+			List<EmpReservationVO> searchList = dao.getreservationSearchRecord(searchReservationWord);
+			if(searchList.size()==0) {
+				JOptionPane.showMessageDialog(this, searchReservationWord+"의 검색 결과가 없습니다");
+			}else {
+				setNewTableList(searchList);
+			}
+			
+		}
 	}
 	
 	public void getReservationAll() {
@@ -248,11 +341,7 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 		sales.setRowCount(0); //JTable의 모든 레코드 지우기
 		for(int i = 0 ; i<lst.size() ; i++) {
 			EmpReservationVO vo =lst.get(i);  // i씩 꺼낼때 vo에 들어가있는데
-//			Object[] data = {vo.getResno(),vo.getUser_name(),vo.getUser_birth(),
-//							vo.getUser_tel(),vo.getDep(),vo.getFlightno(),
-//							vo.getResno_res(),vo.getCom_name(),vo.getCom_birth(),
-//							vo.getCom_tel(),vo.getDep2(),vo.getFlightno_res()
-//							};
+
 			Object[] data1 = {vo.getResno(),vo.getUser_name(),vo.getUser_birth(),
 					vo.getUser_tel(),vo.getDep(),vo.getFlightno(),
 			};
@@ -263,30 +352,86 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 		}
 		
 	}
+	// 회원정보삭제
+	public void reservationDelete() {
+		String resNo =resNOtest;
+		
+		EmpReservationDAO dao = new EmpReservationDAO();
+		
+		int result = dao.empReservationDelete(resNo);
+		
+		String msg = "회원정보가 삭제되었습니다.";
+		JOptionPane.showMessageDialog(this, msg);
+		
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
+
 		if(obj instanceof JButton) {
-			String btn = e.getActionCommand();
-			if(btn.equals("삭제")) {
-			
-			} else if(btn.equals("초기화")) { // 다지우기
+			String test = e.getActionCommand();
+			if(test.equals("삭제")) {
+				reservationDelete();
+			} else if(test.equals("초기화")) { // 다지우기
 				setFormClear();
-			}else if(btn.equals("수정")) {
+				getReservationAll();
+			}else if(test.equals("예약변경")) {
 				this.setVisible(false);
 				EmpMainFrame.reservation1.setVisible(true);
+				EmpMainFrame.reservation1.tablePrint();
 				EmpMainFrame.centerPane.add(EmpMainFrame.reservation1);
+				
+				
+			}else if(obj==btn) {
+				tf[1].setText("");
+				tf[2].setText("");
+				tf[3].setText("");
+				reservationSearch();
+			}else if(obj==btn1) {
+				tf[0].setText("");
+				tf[2].setText("");
+				tf[3].setText("");
+				depSearch();
+			}else if(obj==btn2) {
+				tf[0].setText("");
+				tf[1].setText("");
+				tf[3].setText("");
+				flightNoSearch();
+				
 			}
-		}
+
+//			else if(obj==tf[]) {
+//				tf[0].setText("");
+//				tf[1].setText("");
+//				tf[2].setText("");
+//				dateSearch();
+//			}
 		
 	}
 	
+	}
+	
+	
+	
+
 	public void setFormClear() {	
 		for (int i = 0 ; i <tf.length ; i++) {
 			tf[i].setText("");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	class CustomCalendar extends JFrame implements ActionListener, WindowListener{
 		// 상단 지역
@@ -317,10 +462,11 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 		int year, month, date;
 		
 		public CustomCalendar() {
-			year = now.get(Calendar.YEAR);// 2021년
+			year = now.get(Calendar.YEAR) %100;// 2021년
+//			year = now.get(Calendar.YEAR);
 			month = now.get(Calendar.MONTH)+1; // 0월 == 1월
 			date = now.get(Calendar.DATE);
-			for(int i=year; i<=year+50; i++){yearModel.addElement(i);}
+			for(int i=year-50; i<=year+50; i++){yearModel.addElement(i);}
 			for(int i=1; i<=12; i++) { monthModel.addElement(i); }
 			//////////////////////////프레임///////////////////////////////////////////
 			// 상단 지역
@@ -386,8 +532,7 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 				int yy = (Integer)yearCombo.getSelectedItem();
 				int mm = (Integer)monthCombo.getSelectedItem();
 				if(eventBtn.equals(lastMonth)){	//전달
-					if(mm == 1 && yy == year ) {
-					} else if(mm == 1){
+					if(mm == 1 ) {
 						yy--; mm = 12;
 					} else {
 						mm--;
@@ -453,10 +598,18 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 						if(m.length()==1) m = "0"+m;
 						
 						if(clickCheck==0) {
+							System.out.println("클릭한번");
 							tf[3].setText(y+"/"+m+"/"+str);
 							tf[3].setEnabled(false);
 							clickCheck++;
 						} else if(me.getClickCount()==2) {
+							System.out.println("더블클릭");
+								tf[0].setText("");
+								tf[1].setText("");
+								tf[2].setText("");
+								dateSearch();
+
+							
 							dispose(); // 더블클릭 두번하면 창  //? 근데 다시 열리지않음..음..? ?반복?
 							calendarWindowTest = 0;
 							clickCheck=0;
@@ -481,6 +634,44 @@ public class EmpAirlineReservation extends JPanel implements ActionListener{
 		public void windowDeiconified(WindowEvent e) {}
 		public void windowActivated(WindowEvent e) {}
 		public void windowDeactivated(WindowEvent e) {}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

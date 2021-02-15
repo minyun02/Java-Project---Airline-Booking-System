@@ -9,30 +9,52 @@ public class EmpUserInfoVO {
 	private String user_gender;
 	private String user_tel;
 	private String user_passNo;
-	private String user_exDate;
 	private String user_email;
 	private String mileage;
+	private String grade;
+	private String reason;
+	private String regDate;
 
 	public EmpUserInfoVO() {}
 	
+	
+	public EmpUserInfoVO(int userNo, String user_name, String user_birth,
+			String user_ename, String user_gender, String user_tel,
+			String user_passNo, String user_email, String mileage, String grade) {
+		this.userNo = userNo;
+		this.user_name = user_name;
+		this.user_birth = user_birth;
+		this.user_ename = user_ename;
+		this.user_gender = user_gender;
+		this.user_tel = user_tel;
+		this.user_passNo = user_passNo;
+		this.user_email = user_email;
+		this.mileage = mileage;		
+		this.grade = grade;
+	}
+	
 	public EmpUserInfoVO(int userNo, String user_name, String user_gender,
-			String user_passNo, String user_tel, String user_email) {
+			String user_birth, String user_passNo, String user_tel, String user_email) {
 		this.userNo = userNo;
 		this.user_name = user_name;
 		this.user_gender = user_gender;
+		this.user_birth = user_birth;
 		this.user_passNo = user_passNo;
 		this.user_tel = user_tel;
 		this.user_email = user_email;
 	}
-	
-	public EmpUserInfoVO(int userNo, String user_name, String user_ename, String user_birth, String user_gender,
-			String user_tel, String user_passNo, String user_exDate, String user_email, String mileage) {
-		this(userNo, user_name, user_gender, user_passNo, user_tel, user_email);
+	public EmpUserInfoVO(String user_name, String user_ename, String user_passNo,
+			String user_gender, String user_birth, String reason, int userNo, String regDate) {
+		this.user_name = user_name;
 		this.user_ename = user_ename;
+		this.user_passNo = user_passNo;
+		this.user_gender = user_gender;
 		this.user_birth = user_birth;
-		this.user_exDate = user_exDate;
-		this.mileage = mileage;		
+		this.reason = reason;
+		this.userNo = userNo;
+		this.regDate = regDate;
 	}
+	
 
 	public int getUserNo() {
 		return userNo;
@@ -42,20 +64,20 @@ public class EmpUserInfoVO {
 		this.userNo = userNo;
 	}
 
-	public String getName_kor() {
+	public String getUser_name() {
 		return user_name;
 	}
 
-	public void setName_kor(String name_kor) {
-		this.user_name = name_kor;
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 
-	public String getName_eng() {
+	public String getUser_ename() {
 		return user_ename;
 	}
 
-	public void setName_eng(String name_eng) {
-		this.user_ename = name_eng;
+	public void setUser_ename(String user_ename) {
+		this.user_ename = user_ename;
 	}
 
 	public String getUser_birth() {
@@ -82,20 +104,12 @@ public class EmpUserInfoVO {
 		this.user_tel = user_tel;
 	}
 
-	public String getPassportNo() {
+	public String getUser_passNo() {
 		return user_passNo;
 	}
 
-	public void setPassportNo(String passportNo) {
-		this.user_passNo = passportNo;
-	}
-
-	public String getExpireDate() {
-		return user_exDate;
-	}
-
-	public void setExpireDate(String expireDate) {
-		this.user_exDate = expireDate;
+	public void setUser_passNo(String user_passNo) {
+		this.user_passNo = user_passNo;
 	}
 
 	public String getUser_email() {
@@ -113,6 +127,31 @@ public class EmpUserInfoVO {
 	public void setMileage(String mileage) {
 		this.mileage = mileage;
 	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getRegDate() {
+		return regDate;
+	}
+
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	
 	
 
 }
