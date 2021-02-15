@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -14,7 +16,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+
+import dbAll.CustomReservation4DAO;
+import dbAll.CustomReservation4VO;
 
 
 public class CustomReservation4 extends JPanel implements ActionListener{
@@ -22,7 +28,7 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 	Font fnt2 = new Font("굴림체",Font.BOLD,24);
 	JPanel main = new JPanel();
 		JPanel centerPane = new JPanel();
-			JLabel titleLbl = new JLabel("좌석을 선택하세요");
+			JLabel titleLbl = new JLabel("출발편 좌석을 선택하세요");
 			JPanel seatPane = new JPanel();
 			JScrollPane sp = new JScrollPane(seatPane);
 				JPanel leftSeatPane = new JPanel();
@@ -33,13 +39,12 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 			JPanel wrapPane = new JPanel();
 				JPanel pane1 = new JPanel();
 					JPanel numPane = new JPanel();
-						JLabel name = new JLabel("탑승자");
+//						JLabel name = new JLabel("탑승자");
 						JLabel num = new JLabel("좌석번호");
 					JPanel comboPane = new JPanel();
-					String test[] = {"Test","Test2"};
-					DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(test);
-					JComboBox<String> combo = new JComboBox<String>(model);
-			JScrollPane southSp = new JScrollPane(wrapPane);
+						String food[] = {"한식","양식","중식"};
+						DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(food);
+						JComboBox<String> combo = new JComboBox<String>(model);
 			JPanel btnPane = new JPanel();
 				JButton cancelBtn = new JButton("예약취소");
 				JButton nextBtn = new JButton("다음단계");
@@ -84,6 +89,23 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 	JButton btnF[]= {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22,F23,F24,F25,F26,F27,F28,F29,F30,F31,F32};
 	
 	GridLayout grid = new GridLayout(0,3);
+	
+	// 1 ~ 5번째 사람의 좌석번호를 적는공간
+	JLabel a = new JLabel("");
+	JLabel b = new JLabel("");
+	JLabel c = new JLabel("");
+	JLabel d = new JLabel("");
+	JLabel e = new JLabel("");
+	int count ; // 좌석 선택이 몇번 가능한지 확인하기 위해..
+	int oneNext ; // 편도에서 다음단계 눌렀을때 구분하기 위한 변수
+	int roundNext ; // 왕복에서 다음단계 눌렀을때 구분하기 위한 변수
+	// 편도 데이터 저장 (출발지에서 출발하는 데이터)
+	// 데이터 저장순서 1) 기내식 종류 , 2) 예약자 좌석  , 3) 동행자1 좌석 ......
+	static List<CustomReservation4VO> onelst = new ArrayList<CustomReservation4VO>();
+	CustomReservation4VO vo;
+	// 왕복 데이터 저장 (도착지에서 출발하는 데이터)
+	static List<CustomReservation4VO> roundlst = new ArrayList<CustomReservation4VO>();
+	
 	public CustomReservation4() {
 		setLayout(new BorderLayout(200,50));
 		setBackground(Color.white);
@@ -179,21 +201,43 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 			// 탑승자 좌석 선택번호 표시, 기내식 선택
 			main.add("Center",southPane);
 			southPane.setLayout(new BorderLayout());
-				southPane.add("Center",southSp);
+				southPane.add("Center",wrapPane);
+				JPanel onePane = new JPanel();
+				JPanel twoPane = new JPanel();
+				JPanel thrPane = new JPanel();
+				JPanel fouPane = new JPanel();
+				JPanel fivPane = new JPanel();
 				wrapPane.setLayout(new FlowLayout());
 					wrapPane.add(numPane);
 					wrapPane.setBackground(Color.white);
-					numPane.setLayout(new FlowLayout(FlowLayout.CENTER,80,100));
+					numPane.setLayout(new FlowLayout(FlowLayout.CENTER,40,100));
 					numPane.setBackground(Color.white);
-						numPane.add(name);
-						name.setBackground(Color.white);
-							name.setFont(fnt);
-						numPane.add(num);
-						num.setBackground(Color.white);
-							num.setFont(fnt);
+//						numPane.add(name);
+//						name.setBackground(Color.white);
+//							name.setFont(fnt);
+						
 						numPane.add(combo);
-						combo.setBackground(Color.white);
+							combo.setBackground(Color.white);
 							combo.setFont(fnt);
+						numPane.add(num);
+							num.setBackground(Color.white);
+							num.setFont(fnt);
+							// 좌석 라벨추가
+						numPane.add(a);
+							a.setBackground(Color.white);
+							a.setFont(fnt);
+						numPane.add(b);
+							b.setBackground(Color.white);
+							b.setFont(fnt);
+						numPane.add(c);
+							c.setBackground(Color.white);
+							c.setFont(fnt);
+						numPane.add(d);
+							d.setBackground(Color.white);
+							d.setFont(fnt);
+						numPane.add(e);
+							e.setBackground(Color.white);
+							e.setFont(fnt);
 				southPane.add("South",btnPane);
 				btnPane.setBackground(Color.white);
 				btnPane.setLayout(new FlowLayout(FlowLayout.CENTER ,30,5));
@@ -216,69 +260,312 @@ public class CustomReservation4 extends JPanel implements ActionListener{
 	}
 	public void actionPerformed(ActionEvent ae) {
 		Object obj = ae.getSource();
-		
-		if(obj instanceof JButton) {
-			String seats = ae.getActionCommand();
-			for(int i=0; i<btnA.length;i++) {
-				if(btnA[i].getText().equals(seats)) {
-					Color col = btnA[i].getBackground();
-					if(col.getRed()==192) {
-						btnA[i].setBackground(Color.white);
-						break;
+			if(obj instanceof JButton) {
+				String seats = ae.getActionCommand();
+				
+				if(count <CustomReservation.humanCount) {
+					if(count ==0) {
+						countcheck(seats,a);
+					} else if(count ==1) {
+						countcheck(seats,b);
+					} else if(count ==2) {
+						countcheck(seats,c);
+					} else if(count ==3) {
+						countcheck(seats,d);
+					} else if(count ==4) {
+						countcheck(seats,e);
 					}
-					btnA[i].setBackground(Color.LIGHT_GRAY);
-					break;
-				} else if(btnB[i].getText().equals(seats)) {
-					Color col = btnB[i].getBackground();
-					if(col.getRed()==192) {
-						btnB[i].setBackground(Color.white);
-						break;
+					
+				} else if(count == CustomReservation.humanCount) {
+					if(count==5) {
+						btnMinusCheck(e,seats);
+					} else if(count == 4) {
+						btnMinusCheck(d,seats);
+					} else if(count ==3 ) {
+						btnMinusCheck(c,seats);
+					} else if(count == 2) {
+						btnMinusCheck(b,seats);
+					} else if(count ==1) {
+						btnMinusCheck(a,seats);
 					}
-					btnB[i].setBackground(Color.LIGHT_GRAY);
-					break;
-				} else if(btnC[i].getText().equals(seats)) {
-					Color col = btnC[i].getBackground();
-					if(col.getRed()==192) {
-						btnC[i].setBackground(Color.white);
-						break;
+					
+
+				}else if(count > CustomReservation.humanCount) {
+					setTrue();
+				}
+				
+				
+						
+				if(seats.equals("다음단계")) {
+					// 편도일때는 저장하고 바로~ 넘어간다
+					if(CustomReservation.rdb.equals("편도")) {
+						if(oneNext==0) {
+							// count에 따라서 좌석수를 저장하는 수가 달라진다
+							if(count==1) {
+								vo = new CustomReservation4VO((String)combo.getSelectedItem(), a.getText());	
+							} else if(count==2) {
+								vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText());
+							}else if(count==3) {
+								vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText());
+							}else if(count==4) {
+								vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText());
+							}else if(count==5) {
+								vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText(),e.getText());
+							}
+							onelst.add(vo);
+							oneNext++;
+						}
+						
+						this.setVisible(false);
+						CustomFrame.reservation5.getData();
+						CustomFrame.reservation5.setVisible(true);
+						CustomFrame.centerPane.add(CustomFrame.reservation5);
+					} else if(CustomReservation.rdb.equals("왕복") && roundNext ==0) { // 왕복이면 0번째는 출발지에서 출발하는 좌석 선택
+						// count에 따라서 좌석수를 저장하는 수가 달라진다
+						if(count==1) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(), a.getText());	
+						} else if(count==2) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText());
+						}else if(count==3) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText());
+						}else if(count==4) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText());
+						}else if(count==5) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText(),e.getText());
+						}
+						onelst.add(vo);
+						roundNext++;
+						//settrue 시키고, 도착지 정보 세팅시켜서 넘긴다
+						setTrue();
+						titleLbl.setText("복귀편 좌석을 선택하세요");
+						setArriveSeatPrint();
+					} else if(CustomReservation.rdb.equals("왕복") && roundNext ==1) { // 1번째는 도착지에서 출발하는 좌석 선택
+						// count에 따라서 좌석수를 저장하는 수가 달라진다
+						if(count==1) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(), a.getText());	
+						} else if(count==2) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText());
+						}else if(count==3) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText());
+						}else if(count==4) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText());
+						}else if(count==5) {
+							vo = new CustomReservation4VO((String)combo.getSelectedItem(),a.getText(),b.getText(),c.getText(),d.getText(),e.getText());
+						}
+						roundlst.add(vo);
+						roundNext++;
+						this.setVisible(false);
+						CustomFrame.reservation5.getData();
+						CustomFrame.reservation5.setVisible(true);
+						CustomFrame.centerPane.add(CustomFrame.reservation5);
+					} else if(CustomReservation.rdb.equals("왕복") && roundNext ==2) { // 2번째는 더이상 저장하지 않는다.
+						this.setVisible(false);
+						CustomFrame.reservation5.getData();
+						CustomFrame.reservation5.setVisible(true);
+						CustomFrame.centerPane.add(CustomFrame.reservation5);
 					}
-					btnC[i].setBackground(Color.LIGHT_GRAY);
-					break;
-				} else if(btnD[i].getText().equals(seats)) {
-					Color col = btnD[i].getBackground();
-					if(col.getRed()==192) {
-						btnD[i].setBackground(Color.white);
-						break;
-					}
-					btnD[i].setBackground(Color.LIGHT_GRAY);
-					break;
-				} else if(btnE[i].getText().equals(seats)) {
-					Color col = btnE[i].getBackground();
-					if(col.getRed()==192) {
-						btnE[i].setBackground(Color.white);
-						break;
-					}
-					btnE[i].setBackground(Color.LIGHT_GRAY);
-					break;
-				} else if(btnF[i].getText().equals(seats)) {
-					Color col = btnF[i].getBackground();
-					if(col.getRed()==192) {
-						btnF[i].setBackground(Color.white);
-						break;
-					}
-					btnF[i].setBackground(Color.LIGHT_GRAY);
-					break;
+					
+					
+				}else if(seats.equals("예약취소")){
+					this.setVisible(false);
+					CustomFrame.plan.setVisible(true);
+					setTrue();
+					onelst.removeAll(onelst);
+					roundlst.removeAll(roundlst);
+					
 				}
 			}
-			
-			if(seats.equals("다음단계")) {
-//				this.setVisible(false);
-//				CustomFrame.reservation4.setVisible(true);
-//				CustomFrame.centerPane.add(CustomFrame.reservation4);
-			}else if(seats.equals("예약취소")){
-				this.setVisible(false);
-				CustomFrame.plan.setVisible(true);
+		
+	}
+	///////////////// btn minus 추가
+	public void btnMinusCheck(JLabel num,String seats) {
+		btnMinus(btnA,num,seats);
+		btnMinus(btnB,num,seats);
+		btnMinus(btnC,num,seats);
+		btnMinus(btnD,num,seats);
+		btnMinus(btnE,num,seats);
+		btnMinus(btnF,num,seats);
+	}
+	
+	////////////////////////// count check위해      1번
+	public void countcheck(String seats, JLabel num) {
+		for(int i=0; i<btnA.length; i++) {
+			if(btnA[i].getText().equals(seats)) {
+				setText(seats,num);
+			} else if(btnB[i].getText().equals(seats)) {
+				setText(seats,num);
+			} else if(btnC[i].getText().equals(seats)) {
+				setText(seats,num);
+			} else if(btnD[i].getText().equals(seats)) {
+				setText(seats,num);
+			} else if(btnE[i].getText().equals(seats)) {
+				setText(seats,num);
+			} else if(btnF[i].getText().equals(seats)) {
+				setText(seats,num);
 			}
 		}
 	}
+	
+	// 시트 버튼 눌렀을때 변화 및 좌석번호         2번
+		public void setText(String seats, JLabel num) {
+			if(count <CustomReservation.humanCount) {
+				btnPrint(btnA,num,seats);
+				btnPrint(btnB,num,seats);
+				btnPrint(btnC,num,seats);
+				btnPrint(btnD,num,seats);
+				btnPrint(btnE,num,seats);
+				btnPrint(btnF,num,seats);
+				
+			} else if(count == CustomReservation.humanCount) {
+				
+				btnMinus(btnA,num,seats);
+				btnMinus(btnB,num,seats);
+				btnMinus(btnC,num,seats);
+				btnMinus(btnD,num,seats);
+				btnMinus(btnE,num,seats);
+				btnMinus(btnF,num,seats);
+			}
+		}
+		//////////////////////////// 3-1번
+		public void btnPrint(JButton btn[], JLabel num, String seats) {
+			for(int i=0; i<btnA.length; i++) {
+				if(btn[i].getText().equals(seats)) {
+					Color col = btn[i].getBackground();
+					if(col.getRed()==192) {
+						btn[i].setBackground(Color.white);
+						num.setText("");
+						count--;
+						break;
+					}
+					btn[i].setBackground(Color.LIGHT_GRAY);
+					num.setText(btn[i].getText());
+					
+					if(count < CustomReservation.humanCount) {
+						count++;
+					}
+					break;
+					
+				}
+			}
+		}
+		////////////////////////// 3-2번
+		public void btnMinus(JButton btn[], JLabel num, String seats) {
+			for(int i=0; i<btnA.length; i++) {
+				if(btn[i].getText().equals(seats)) {
+					Color col = btn[i].getBackground();
+					if(col.getRed()==192) {
+						btn[i].setBackground(Color.white);
+						num.setText("");
+						count--;
+						break;
+					}
+				}
+			}
+		}
+		
+	// 출발 시트 선택위한...
+	public void setStartSeatPaint() {
+		// start 날짜
+		String startD = CustomReservation.startDateField.getText().substring(2,10);
+		System.out.println("출발하는 날짜 고른거->"+startD);
+		String startFlightno = CustomReservation2.startSelect;
+		System.out.println("출발하느날짜 비행편->"+startFlightno);
+		CustomReservation4DAO dao = new CustomReservation4DAO();
+		List<CustomReservation4VO> lst = dao.startSeat(startFlightno, startD);
+		for(int i = 0; i<lst.size(); i++) {
+			CustomReservation4VO vo = lst.get(i);
+			System.out.println("좌석이 어떤게 받아져왔나----->"+vo);
+			for(int j=0; j<btnA.length; j++) {
+				if(btnA[j].getText().equals(vo.getSeatNo())) {
+					btnA[j].setBackground(Color.black);
+					btnA[j].setEnabled(false);
+				} else if(btnB[j].getText().equals(vo.getSeatNo())) {
+					btnB[j].setBackground(Color.black);
+					btnB[j].setEnabled(false);
+				} else if(btnC[j].getText().equals(vo.getSeatNo())) {
+					btnC[j].setBackground(Color.black);
+					btnC[j].setEnabled(false);
+				} else if(btnD[j].getText().equals(vo.getSeatNo())) {
+					btnD[j].setBackground(Color.black);
+					btnD[j].setEnabled(false);
+				} else if(btnD[j].getText().equals(vo.getSeatNo())) {
+					btnD[j].setBackground(Color.black);
+					btnD[j].setEnabled(false);
+				} else if(btnE[j].getText().equals(vo.getSeatNo())) {
+					btnE[j].setBackground(Color.black);
+					btnE[j].setEnabled(false);
+				} else if(btnF[j].getText().equals(vo.getSeatNo())) {
+					btnF[j].setBackground(Color.black);
+					btnF[j].setEnabled(false);
+				}
+				
+			}
+		}
+		System.out.println("???????????????????????????????????????????????????????????????????");
+	}
+	
+	// 복귀 시트 선택
+	public void setArriveSeatPrint() {
+		// arrive 날짜
+		String arriveD = CustomReservation.arriveDateField.getText().substring(2,10);
+		String arriveFlightno = CustomReservation2.arriveSelect;
+		CustomReservation4DAO dao = new CustomReservation4DAO();
+		List<CustomReservation4VO> lst = dao.startSeat(arriveFlightno, arriveD);
+		for(int i = 0; i<lst.size(); i++) {
+			CustomReservation4VO vo = lst.get(i);
+			for(int j=0; j<btnA.length; j++) {
+				if(btnA[j].getText().equals(vo.getSeatNo())) {
+					btnA[j].setBackground(Color.black);
+					btnA[j].setEnabled(false);
+				} else if(btnB[j].getText().equals(vo.getSeatNo())) {
+					btnB[j].setBackground(Color.black);
+					btnB[j].setEnabled(false);
+				} else if(btnC[j].getText().equals(vo.getSeatNo())) {
+					btnC[j].setBackground(Color.black);
+					btnC[j].setEnabled(false);
+				} else if(btnD[j].getText().equals(vo.getSeatNo())) {
+					btnD[j].setBackground(Color.black);
+					btnD[j].setEnabled(false);
+				} else if(btnD[j].getText().equals(vo.getSeatNo())) {
+					btnD[j].setBackground(Color.black);
+					btnD[j].setEnabled(false);
+				} else if(btnE[j].getText().equals(vo.getSeatNo())) {
+					btnE[j].setBackground(Color.black);
+					btnE[j].setEnabled(false);
+				} else if(btnF[j].getText().equals(vo.getSeatNo())) {
+					btnF[j].setBackground(Color.black);
+					btnF[j].setEnabled(false);
+				}
+				
+			}
+		}
+	}
+	
+	// 왕복일 경우 도착지 검색하기 위해 다시 원복귀 시킨다
+	public void setTrue() {
+		for(int j=0; j<btnA.length; j++) {
+			btnA[j].setBackground(Color.white);
+			btnA[j].setEnabled(true);
+			btnB[j].setBackground(Color.white);
+			btnB[j].setEnabled(true);
+			btnC[j].setBackground(Color.white);
+			btnC[j].setEnabled(true);
+			btnD[j].setBackground(Color.white);
+			btnD[j].setEnabled(true);
+			btnD[j].setBackground(Color.white);
+			btnD[j].setEnabled(true);
+			btnE[j].setBackground(Color.white);
+			btnE[j].setEnabled(true);
+			btnF[j].setBackground(Color.white);
+			btnF[j].setEnabled(true);
+		}
+		count = 0;
+		a.setText("");
+		b.setText("");
+		c.setText("");
+		d.setText("");
+		e.setText("");
+	}
+	
+	
 }

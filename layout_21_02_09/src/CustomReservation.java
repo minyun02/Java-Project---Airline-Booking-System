@@ -12,11 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -29,57 +26,55 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-public class CustomReservation extends JPanel implements ActionListener{
+public class CustomReservation extends JPanel implements ActionListener {
 	Font fnt = new Font("굴림체",Font.BOLD,14);
 	
 	JPanel changePane = new JPanel();
 	JLabel startLbl = new JLabel("출발지");
-		String start[] = {"인천","런던","바르셀로나","발리","방콕","부산","시드니","싱가포르","서울/김포"
+		static String start[] = {"인천","런던","바르셀로나","발리","방콕","부산","시드니","싱가포르","서울/김포"
 				,"제주","파리","호놀룰루"};
-		DefaultComboBoxModel<String> startModel = new DefaultComboBoxModel<String>(start);
-		JComboBox<String> startCombo = new JComboBox<String>(startModel);
+		static DefaultComboBoxModel<String> startModel = new DefaultComboBoxModel<String>(start);
+		static JComboBox<String> startCombo = new JComboBox<String>(startModel);
 	
 	JLabel arriveLbl = new JLabel("도착지");
-		String arrive[] = {"런던","바르셀로나","발리","방콕","부산","시드니","싱가포르","서울/김포","인천"
+		static String arrive[] = {"런던","바르셀로나","발리","방콕","부산","시드니","싱가포르","서울/김포","인천"
 				,"제주","파리","호놀룰루"};
-		DefaultComboBoxModel<String> arriveModel = new DefaultComboBoxModel<String>(arrive);
-		JComboBox<String> arriveCombo = new JComboBox<String>(arriveModel);
+		static DefaultComboBoxModel<String> arriveModel = new DefaultComboBoxModel<String>(arrive);
+		static JComboBox<String> arriveCombo = new JComboBox<String>(arriveModel);
 
 	JLabel startDateLbl = new JLabel("출발 날짜");
-		JTextField startDateField = new JTextField(10);
+		static JTextField startDateField = new JTextField();
 		ImageIcon icon = new ImageIcon("img/calendar.png");
 		Image im = icon.getImage();
 		Image im2 = im.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
 		ImageIcon icon2 = new ImageIcon(im2);
 		JLabel startCalendar = new JLabel(icon2);
 	JLabel arriveDateLbl = new JLabel("도착 날짜");
-		JTextField arriveDateField = new JTextField(10);
+		static JTextField arriveDateField = new JTextField();
 	JLabel roundDateLbl = new JLabel("종류");
 		JRadioButton roundBtn = new JRadioButton("왕복");
 		JRadioButton onewayBtn = new JRadioButton("편도");	
-		
 		ButtonGroup groupRd = new ButtonGroup();
+		static String rdb ="왕복"; // 라디오버튼 눌린게 무엇인지 구별
 		
 	JLabel humanLbl = new JLabel("인원수");
 		JLabel audultLbl = new JLabel("어른");
-		Integer audult[] = {1,2,3,4,5};
-		DefaultComboBoxModel<Integer> adultModel = new DefaultComboBoxModel<Integer>(audult);
-		JComboBox<Integer> audultAge = new JComboBox<Integer>(adultModel);
+		static Integer audult[] = {1,2,3,4,5};
+		static DefaultComboBoxModel<Integer> adultModel = new DefaultComboBoxModel<Integer>(audult);
+		static JComboBox<Integer> audultAge = new JComboBox<Integer>(adultModel);
 		JLabel babyLbl = new JLabel("소아");
-		Integer baby[] = {0,1,2,3,4,5};
-		DefaultComboBoxModel<Integer> babyModel = new DefaultComboBoxModel<Integer>(baby);
-		JComboBox<Integer> babyAge = new JComboBox<Integer>(babyModel);
+		static Integer baby[] = {0,1,2,3,4,5};
+		static DefaultComboBoxModel<Integer> babyModel = new DefaultComboBoxModel<Integer>(baby);
+		static JComboBox<Integer> babyAge = new JComboBox<Integer>(babyModel);
 		
 		
 	
 	JButton cancelBtn = new JButton("예약취소");
 	JButton nextBtn = new JButton("다음단계");
 	
-	JPanel main = new JPanel();
-	int x, x1;
-	int calendarWindowTest = 0;
-	int clickCheck = 0;
-
+	int calendarWindowTest = 0; // calendar가 켜졌을때는 한번 더 open되지 않도록 제한사항을 부여
+	int clickCheck = 0; // 달력에서 클릭한 횟수를 통해 출발날짜, 도착날짜가 체크되는 순서를 절한다.
+	static int humanCount; // 사람 명수
 	public CustomReservation() {
 		setLayout(new BorderLayout());
 		
@@ -159,7 +154,7 @@ public class CustomReservation extends JPanel implements ActionListener{
 	
 	public void actionPerformed(ActionEvent ae) {
 		Object obj = ae.getSource();
-		String rdb;
+
 		if(obj instanceof JButton) {
 			String btn = ae.getActionCommand();
 			
@@ -178,16 +173,24 @@ public class CustomReservation extends JPanel implements ActionListener{
 					JOptionPane.showMessageDialog(this, "당일보다 이전일은 항공일정이 없습니다");
 				} else if(dayMinusCheck()==1) {
 					JOptionPane.showMessageDialog(this, "출발 날짜보다 도착 날짜가 이전일 수는 없습니다");
-				} else {
+				} else if(humanCount() == 1){
+					JOptionPane.showMessageDialog(this, "본인을 포함, 5명을 초과하여 예약 할 수 없습니다 \n단체 예약을 원 할경우 관리자에게 문의하시기 바랍니다.");
+				}else {
 					this.setVisible(false);
 					CustomFrame.reservation2.setVisible(true);
 					CustomFrame.centerPane.add(CustomFrame.reservation2);
 				}
 			}
 		} else if(obj instanceof JRadioButton) {
-			rdb = ae.getActionCommand();
-			
+			rdb = (String)ae.getActionCommand();
 		}
+	}
+	public int humanCount() {
+		int result = 0;
+		humanCount = (int) audultAge.getSelectedItem() +  (int)babyAge.getSelectedItem();
+		if(humanCount >5) result = 1;
+		
+		return result;
 	}
 	
 	

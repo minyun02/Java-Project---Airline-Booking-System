@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,12 +22,16 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomBookingChange2VO;
+import dbAll.CustomBookingChange3DAO;
+import dbAll.CustomBookingChange3VO;
+
 public class CustomBookingChange3 extends JPanel implements MouseListener, ItemListener{
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font titleFnt = new Font("굴림체", Font.BOLD, 32);
 	
 	JLabel titleLbl1 = new JLabel("선택 항공 내역");
-	String flightStr[] = {"출발지", "도착지", "출발일", "도착일", "촐발시간", "도착시간", "항공편명", "좌석", "운임"};
+	String flightStr[] = {"출발지", "도착지", "출발일",  "출발시간", "도착시간", "항공편명", "좌석", "운임"};
 	JTable table1;
 	JScrollPane sp1;
 	DefaultTableModel model1;
@@ -42,7 +47,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 	JLabel lbl2 = new JLabel("해당 정보를 확인하세요. 위 내용은 예약 완료 후 변경이 불가합니다.");
 	
 	JLabel titleLbl3 = new JLabel("결제 내역");
-	String paymentStr[] = {"구분",  "변경 전", "변경 후", "결제예정금액"};
+	String paymentStr[] = {"변경 전", "변경 후"};
 	JTable table3;
 	JScrollPane sp3;
 	DefaultTableModel model3;
@@ -134,7 +139,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			}else {
 				allSelected = 1;
 				payBtn.setEnabled(true);
-				System.out.println(allSelected);
+				//System.out.println(allSelected);
 			}
 		}else if(ie.getStateChange()==ItemEvent.DESELECTED) {
 			if(ie.getItem()==check1) {
@@ -147,7 +152,114 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 		}
 		
 	}
+	
+	public void setMileageUpdate(int mileageTotal, int mileageOld, int mileageNew, String passNo) {//결제창에서 결제버튼 누르면 마일리지 업데이트
+		CustomBookingChange3VO vo = new CustomBookingChange3VO();
+		vo.setMileageTotal(mileageTotal);
+		vo.setMileageOld(mileageOld);
+		vo.setMileageNew(mileageNew);
+		vo.setUserPassNo(passNo);
+		
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		int result = dao.mileageUpdate(vo);
+		
+	}
+	public void setBookingUpdate(String newFlightFromModel1, String resNo) {//결제창에서 결제버튼 눌리면 예약정보에서 항공편명 업데이트
+		CustomBookingChange3VO vo = new CustomBookingChange3VO();
+		vo.setNewFlightNum(newFlightFromModel1);
+		vo.setResNo(resNo);
+		System.out.println("도와주세요_>"+newFlightFromModel1);
+		
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		int result = dao.bookingUpdate(vo);
+		if(result>0) {
+			JOptionPane.showMessageDialog(this, "예약정보가 변경되었습니다.");
+		}else {
+			JOptionPane.showMessageDialog(this, "예약정보 수정이 실패하였습니다. \n 다시 시도해주세요.");
+			this.setVisible(false);
+			paymentWindowState = 0;
+		}
+		
+	}
+	///**************************************************************************************TABLE1
+	public void table1Print() {
+		String newFlight = CustomBookingChange2.newFlightNum;//t1,t3
+		
+		String resNo = CustomBookingChange1.getResNo;//t1,t2
+		String oldFlight = CustomBookingChange1.getFlight;//t3
+		
+		setTable1(newFlight, resNo);
+		//System.out.println(newFlight+"        "+resNo);
+		//System.out.println(oldFlight);
+	}
+	public void setTable1(String newFlight, String resNo) {
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		List<CustomBookingChange3VO> lst = dao.getTable1(newFlight, resNo);
+		
+		setTable1List(lst);
+	}
+	public void setTable1List(List<CustomBookingChange3VO> lst) {
+		model1.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomBookingChange3VO vo = lst.get(i);
+			Object[] data = {vo.getDep(), vo.getDes(), vo.getBrdDate(), vo.getDepTime(),
+					vo.getDesTime(), vo.getFlightNo(), vo.getSeatNo(), vo.getFare()};
 
+			model1.addRow(data);
+			}
+	}
+	
+///**************************************************************************************TABLE2
+	public void table2Print() {
+		String resNo = CustomBookingChange1.getResNo;//t1,t2
+		
+		setTable2(resNo);
+	}
+	public void setTable2(String resNo) {
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		List<CustomBookingChange3VO> lst = dao.getTable2(resNo);
+		
+		setTable2List(lst);
+	}
+	public void setTable2List(List<CustomBookingChange3VO> lst) {
+		model2.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomBookingChange3VO vo = lst.get(i);
+			Object[] data = {vo.getUserName(), vo.getUserEname(), vo.getUserPassNo(), vo.getUserExdate(),
+					vo.getUserNation(), vo.getUserBirth(), vo.getUserTel(), vo.getUserEmail()};
+
+			model2.addRow(data);
+			}
+	}
+	///**************************************************************************************TABLE3
+	public void table3Print() {
+		String oldFlight = CustomBookingChange1.getFlight;
+		String newFlight = CustomBookingChange2.newFlightNum;
+		
+		setTable3(oldFlight, newFlight);
+	}
+	public void setTable3(String oldFlight, String newFlight) {
+		CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+		List<CustomBookingChange3VO> lst = dao.getTable3(oldFlight, newFlight);
+		
+		setTable3List(lst);
+	}
+	public void setTable3List(List<CustomBookingChange3VO> lst) {
+		model3.setRowCount(0);
+		
+		//for(int i=0;i<lst.size();i++) {
+			CustomBookingChange3VO vo1 = lst.get(0);//변경 전
+			CustomBookingChange3VO vo2 = lst.get(1);//변경 후
+			
+			Object data = vo1.getOldFare();//변경전
+			Object[] data1 = {data, vo2.getOldFare()};//변경전 운임과 변경후 운임을 같은 배열에 넣어주고 
+			
+			model3.addRow(data1);// 운임 배열은 테이블에 넣는다
+			
+			System.out.println("oldFare->"+vo1.getOldFare());//변경전 확인용
+			System.out.println("NewFare->"+vo2.getOldFare());//변경후 확인용
+		//}
+	}
 	@Override
 	public void mouseClicked(MouseEvent me) {
 		Object obj = me.getSource();
@@ -158,8 +270,27 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 					JOptionPane.showMessageDialog(this, "모든 내용을 확인해주세요");
 				}else if(allSelected != 0) {
 					if(paymentWindowState==0) {
-						new CustomChangePayment();
-						paymentWindowState = 1;
+						String fare1 = (String) model3.getValueAt(0, 0);
+						String fare2 = (String) model3.getValueAt(0, 1);
+						int oldFare = Integer.parseInt(fare1);
+						int newFare = Integer.parseInt(fare2);
+						int rowCount = model1.getRowCount();
+						
+						if(oldFare>newFare) {
+							JOptionPane.showMessageDialog(this, "예약 변경이 완료되었습니다. \n 이용해주셔서 감사합니다.");
+													
+							
+							CustomFrame.bookingChange4.table1Print();
+							CustomFrame.bookingChange4.table2Print();
+							
+							
+							this.setVisible(false);
+							CustomFrame.bookingChange4.setVisible(true);
+							CustomFrame.centerPane.add(CustomFrame.bookingChange4);
+						}else {
+							new CustomChangePayment(oldFare,newFare, rowCount);
+							paymentWindowState = 1;
+						}
 					}
 				}
 			}else if(btnStr.equals("예약취소")) {
@@ -197,7 +328,7 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 	/////////////////////////////////////////////////////////////////////////
 								//결제창//
 	////////////////////////////////////////////////////////////////////////
-	class CustomChangePayment extends JFrame implements ActionListener, MouseListener, WindowListener{
+	class CustomChangePayment extends JFrame implements ActionListener, WindowListener{
 		Font fnt = new Font("굴림체", Font.BOLD, 14);
 		
 		JLabel amountLbl1 = new JLabel("초기 운임");
@@ -221,10 +352,10 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 		
 		JLabel mileageLbl1 = new JLabel("적립 마일리지");
 		JLabel mileageLbl2 = new JLabel("570");
-		JLabel mileageLbl3 = new JLabel("등급명");
-		JLabel mileageLbl4 = new JLabel("보유 마일리지");
-		JLabel mileageLbl5 = new JLabel("3800");
-		JButton mileageBtn = new JButton("사용하기");
+//		JLabel mileageLbl3 = new JLabel("등급명");
+//		JLabel mileageLbl4 = new JLabel("보유 마일리지");
+//		JLabel mileageLbl5 = new JLabel("3800");
+//		JButton mileageBtn = new JButton("사용하기");
 		
 		JLabel finalPayLbl1 = new JLabel("최종 결제금액");
 		JLabel finalPayLbl2 = new JLabel("15000");
@@ -234,16 +365,19 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 		JButton payBtn = new JButton("결제");
 		JButton cancelBtn = new JButton("취소");
 		
-		public CustomChangePayment() {
+		public CustomChangePayment(int oldFare, int newFare, int rowCount) {
 			setLayout(null);
 			setBackground(Color.white);
 			
+			
 			add(amountLbl1).setBounds(60,70, 80,25); amountLbl1.setFont(fnt);
 			add(amountLbl2).setBounds(200,70, 100,25);amountLbl2.setFont(fnt);
+			amountLbl2.setText(Integer.toString(oldFare*rowCount));
 			add(wonLbl).setBounds(270,70, 20,25); wonLbl.setFont(fnt);
 			
 			add(amountLbl3).setBounds(60,100, 80, 25); amountLbl3.setFont(fnt); 
 			add(amountLbl4).setBounds(200, 100, 100, 25);amountLbl4.setFont(fnt); 
+			amountLbl4.setText(Integer.toString(newFare*rowCount));
 			add(wonLbl2).setBounds(270,100, 20,25);	wonLbl2.setFont(fnt);
 				
 			add(paymentLbl).setBounds(60, 130, 80, 25); paymentLbl.setFont(fnt);
@@ -259,11 +393,15 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 				
 			add(mileageLbl1).setBounds(60,190, 100,25); mileageLbl1.setFont(fnt);
 			add(mileageLbl2).setBounds(200,190, 60,25); mileageLbl2.setFont(fnt);
+			int mileage = (int)(newFare * 0.0001);
+			mileageLbl2.setText(Integer.toString(mileage));
 			//add(mileageLbl3).setBounds(270,190, 60, 25); mileageLbl3.setFont(fnt);
 			
 					
 			add(finalPayLbl1).setBounds(60,220, 100,25); finalPayLbl1.setFont(fnt);
 			add(finalPayLbl2).setBounds(200,220, 100,25); finalPayLbl2.setFont(fnt);
+			
+			finalPayLbl2.setText(Integer.toString((newFare-oldFare)*rowCount));
 			add(wonLbl3).setBounds(270,220, 20,25); wonLbl3.setFont(fnt);
 			
 			add(payBtn).setBounds(75,320, 100, 30); payBtn.setFont(fnt);
@@ -280,16 +418,30 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			
 			paymentBox.addActionListener(this);
-			payBtn.addMouseListener(this);
-			cancelBtn.addMouseListener(this);
+			payBtn.addActionListener(this);
+			cancelBtn.addActionListener(this);
 			addWindowListener(this);
+		}
+		public void getMileage(String passNo) {
+			CustomBookingChange3DAO dao = new CustomBookingChange3DAO();
+			
+			int oldFare = Integer.parseInt((String)CustomFrame.bookingChange3.model3.getValueAt(0, 0));
+			int newFare = Integer.parseInt((String)CustomFrame.bookingChange3.model3.getValueAt(0, 1));
+
+			int mileageTotal = dao.getMileage(passNo);//현재 누적마일리지
+			int mileageOld = (int)(oldFare*0.0001);//변경전 운임 마일리지
+			int mileageNew = (int)(newFare*0.0001);//변경후 운임 마일리지
+			
+			CustomFrame.bookingChange3.setMileageUpdate(mileageTotal, mileageOld, mileageNew, passNo);
+			
+			System.out.println(mileageTotal+"그리고"+mileageOld+"그리고또"+mileageNew);
 		}
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			Object obj = ae.getSource();
 			if(obj instanceof JComboBox) {
 				String comboItem = (String)paymentBox.getSelectedItem();
-				System.out.println(comboItem);
+				//System.out.println(comboItem);
 				
 				if(comboItem.equals("계좌이체")) {
 					cardNumLbl.setVisible(false);
@@ -302,19 +454,26 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 					numLbl.setVisible(false);
 					cardNumTf.setVisible(true);
 				}
-			}
-			
-		}
-		@Override
-		public void mouseClicked(MouseEvent me) {
-			Object obj = me.getSource();
-			if(obj instanceof JButton) {
-				String btnName = ((JButton) obj).getText();
-				if(btnName.equals("결제")) {
-					JOptionPane.showMessageDialog(this, "결제가 완료되었습니다");
+			}else if(obj instanceof JButton) {
+				String btnStr = ((JButton) obj).getText();
+				if(btnStr.equals("취소")) {
+					JOptionPane.showMessageDialog(this, "예약변경이 취소되었습니다.");
 					this.setVisible(false);
-//					paymentState = 1; // 1이면 결제를 했다는 뜻이니까 cbc4로 화면 전환 가자!!
-//					System.out.println(paymentState);
+					paymentWindowState = 0;
+				}else if(btnStr.equals("결제")) {
+					JOptionPane.showMessageDialog(this, "결제가 완료되었습니다");
+					String newFlightFromModel1 = (String)CustomFrame.bookingChange3.model1.getValueAt(0, 5);
+					String resno = CustomFrame.bookingChange1.getResNo;
+					CustomFrame.bookingChange3.setBookingUpdate(newFlightFromModel1, resno);
+					
+					String passNo = (String)CustomFrame.bookingChange3.model2.getValueAt(0, 2);
+					System.out.println(passNo);
+					getMileage(passNo);
+					
+					CustomFrame.bookingChange4.table1Print();
+					CustomFrame.bookingChange4.table2Print();
+					
+					this.setVisible(false);
 					CustomFrame.bookingChange3.setVisible(false);
 					CustomFrame.bookingChange4.setVisible(true);
 					CustomFrame.centerPane.add(CustomFrame.bookingChange4);
@@ -322,20 +481,6 @@ public class CustomBookingChange3 extends JPanel implements MouseListener, ItemL
 			}
 			
 		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-
-		@Override
-		public void mouseExited(MouseEvent e) {}
-
-		
 		
 		@Override
 		public void windowOpened(WindowEvent e) {

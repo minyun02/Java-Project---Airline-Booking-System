@@ -11,8 +11,8 @@ public class AirlineSignUpDAO extends DBConn{
 		try{
 			getConn();
 			sql = "insert into ac_user(userNo, user_passNo, user_id, "
-					+ " user_pwd,user_name,user_ename,user_tel, user_email,user_gender) "
-					+ " values(user_sq.nextval,pass_sq.nextval,?,?,?,?,?,?,?)";
+					+ " user_pwd,user_name,user_ename,user_tel, user_email,user_gender,mileage,grade) "
+					+ " values(user_sq.nextval,pass_sq.nextval,?,?,?,?,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, vo.getUser_id());
 			pstmt.setString(2, vo.getUser_pwd());
@@ -21,6 +21,8 @@ public class AirlineSignUpDAO extends DBConn{
 			pstmt.setString(5, vo.getUser_tel());
 			pstmt.setString(6, vo.getUser_email());
 			pstmt.setString(7, vo.getUser_gender());
+			pstmt.setInt(8, 0);
+			pstmt.setString(9, "White");
 			
 			result = pstmt.executeUpdate();
 		} catch(Exception e) {

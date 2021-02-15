@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,19 +16,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dbAll.CustomBookingChange1DAO;
+import dbAll.CustomBookingChange1VO;
+
 public class CustomBookingChange1 extends JPanel implements ActionListener, MouseListener {
+	static String userName = "";
+	
 	Font fnt = new Font("굴림체", Font.BOLD, 14);
 	Font fnt1 = new Font("굴림체", Font.BOLD, 20);
 	
 	JLabel numLbl1 = new JLabel("예약번호");
-	JLabel numLbl2 = new JLabel("AB1C57");
+	JLabel numLbl2 = new JLabel(" ");
 	JLabel dateLbl1 = new JLabel("출발일시");
-	JLabel dateLbl2 = new JLabel("2021-01-31");
+	JLabel dateLbl2 = new JLabel(" ");
 	JLabel dateLbl3 = new JLabel(" ");
 	
-	JLabel depLbl = new JLabel("로스엔젤레스");
-	JLabel depALbl = new JLabel("GMP");
-	JLabel depTimeLbl = new JLabel("15:00");
+	JLabel depLbl = new JLabel("출발지");
+	JLabel depALbl = new JLabel("출발공항");
+	JLabel depTimeLbl = new JLabel("출발시간");
 	
 	ImageIcon ii1 = new ImageIcon("img/arrow1.png");
 	Image img = ii1.getImage();
@@ -35,11 +41,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	ImageIcon changeIcon = new ImageIcon(changeImg);
 	JLabel arrowLbl = new JLabel(changeIcon);
 	
-	JLabel flightNumLbl = new JLabel("KK512");
+	JLabel flightNumLbl = new JLabel(" ");
 	
-	JLabel desLbl = new JLabel("산타마리아고메즈");
-	JLabel desALbl = new JLabel("CJU");
-	JLabel arrTimeLbl = new JLabel("16:00");
+	JLabel desLbl = new JLabel("도착지");
+	JLabel desALbl = new JLabel("도착공항");
+	JLabel arrTimeLbl = new JLabel("도착시간");
 
 	JButton changeBtn = new JButton("예약변경");
 	JButton cancelBtn = new JButton("예약취소");
@@ -53,7 +59,12 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	
 	//이벤트용 변수
 	int row = 0;
+	String user_name = "";
 	
+	static String getDep;
+	static String getDes;
+	static String getFlight;//기존 예약 항공편명
+	static String getResNo;
 	
 	public CustomBookingChange1() {
 		setLayout(null);
@@ -72,7 +83,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 		add(depLbl).setBounds(345, 150, 100, 25);
 			depLbl.setFont(fnt);
-		add(depALbl).setBounds(345,170, 60, 25);
+		add(depALbl).setBounds(345,170, 100, 25);
 			depALbl.setFont(fnt1);
 		add(depTimeLbl).setBounds(345, 190, 60, 25);	
 			depTimeLbl.setFont(fnt);
@@ -83,7 +94,7 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 		add(desLbl).setBounds(610, 150, 120, 25);
 			desLbl.setFont(fnt);
-		add(desALbl).setBounds(610, 170, 60, 25);
+		add(desALbl).setBounds(610, 170, 100, 25);
 			desALbl.setFont(fnt1);
 		add(arrTimeLbl).setBounds(610, 190, 60, 25);
 			arrTimeLbl.setFont(fnt);
@@ -98,11 +109,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			cancelBtn.setForeground(Color.white);
 			
 		////table
-		String test[][] = {
-					{"YY510D","20210202","AC123","인천","INC","19:45","런던","LND","10:30"},
-					{"WDW874","20210218","AC987","런던","LND","08:30","인천","INC","17:50"}
-		};
-		model = new DefaultTableModel(test,booking);
+//		String test[][] = {
+//					{"YY510D","20210202","AC123","인천","INC","19:45","런던","LND","10:30"},
+//					{"WDW874","20210218","AC987","런던","LND","08:30","인천","INC","17:50"}
+//		};
+		model = new DefaultTableModel(booking, 0);
 		table = new JTable(model);
 		sp = new JScrollPane(table);
 		add(sp).setBounds(200, 300, 600, 300);
@@ -116,9 +127,38 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 		
 		changeBtn.addActionListener(this);
 		cancelBtn.addActionListener(this);
-	}
 
-	
+		getLoginName();
+		//페이지 들어오면 테이블에 테이버 세팅
+		getAllBooking();
+		
+	}
+	public void getLoginName() {
+		String id = AirlineMain.idField.getText();
+		CustomBookingChange1DAO dao = new CustomBookingChange1DAO();
+		List<CustomBookingChange1VO> name = dao.getName(id);
+		for(int i=0; i<name.size(); i++) {
+			CustomBookingChange1VO vo = name.get(i);
+			user_name = vo.getUser_id();
+		}
+	}
+	public void getAllBooking() {
+		CustomBookingChange1DAO dao = new CustomBookingChange1DAO();
+		List<CustomBookingChange1VO> lst = dao.bookingAllSelect(user_name);
+		
+		setNewTableList(lst);
+	}
+	public void setNewTableList(List<CustomBookingChange1VO> lst) {
+		model.setRowCount(0);
+		for(int i=0; i<lst.size();i++) {
+			CustomBookingChange1VO vo = lst.get(i);
+			Object[] data = {vo.getResno_r(), vo.getBrdDate_r(),vo.getFlightNo_r(),
+					vo.getDep_city_d1(), vo.getDep_airport_d1(), vo.getDepTime_f(),
+					vo.getDes_city_d2(),vo.getDes_airport_d2(),vo.getDesTime_f()};
+			model.addRow(data);
+			
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -126,12 +166,13 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 		if(obj instanceof JButton) {
 			String btnStr = ((JButton) obj).getText();
 			if(btnStr.equals("예약변경")) {
-				System.out.println("1111");
+				//System.out.println("1111");
 				if(row==0) {
 					JOptionPane.showMessageDialog(this, "변경할 예약정보를 선택해주세요.");
 				}else {
 					this.setVisible(false);
 					CustomFrame.bookingChange2.setVisible(true);
+					CustomFrame.bookingChange2.tablePrint();
 					CustomFrame.centerPane.add(CustomFrame.bookingChange2);
 				}
 			}else if(btnStr.equals("예약취소")) {
@@ -150,11 +191,11 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 	public void mouseClicked(MouseEvent me) {
 		if(me.getButton()==1) {
 			if(table.getSelectedRowCount() != 1) {
-				System.out.println("@22");
+				//System.out.println("@22");
 				JOptionPane.showMessageDialog(this, "1개의 예약정보만 선택해주세요.");
 			}else {
 				row = table.getSelectedRow()+1;
-				System.out.println(row);
+				//System.out.println(row);
 			}
 		}
 		
@@ -177,11 +218,18 @@ public class CustomBookingChange1 extends JPanel implements ActionListener, Mous
 			
 			depLbl.setText((String)model.getValueAt(row, 3));
 			depALbl.setText((String)model.getValueAt(row, 4));
+			
 			depTimeLbl.setText((String)model.getValueAt(row, 5));
 			
 			desLbl.setText((String)model.getValueAt(row, 6));
 			desALbl.setText((String)model.getValueAt(row, 7));
+			
 			arrTimeLbl.setText((String)model.getValueAt(row, 8));
+
+			getDep = ((String)model.getValueAt(row, 4));
+			getDes = ((String)model.getValueAt(row, 7));
+			getFlight = ((String)model.getValueAt(row, 2));
+			getResNo = ((String)model.getValueAt(row, 0));
 		}
 		
 	}

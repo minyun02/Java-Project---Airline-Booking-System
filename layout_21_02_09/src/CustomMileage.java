@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,6 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import dbAll.CustomMileageDAO;
+import dbAll.CustomMileageVO;
+import dbAll.CustomMypageDAO;
+import dbAll.CustomMypageVO;
 
 public class CustomMileage extends JPanel implements ActionListener{
 	Font fnt = new Font("굴림체",Font.BOLD,14);
@@ -23,11 +29,9 @@ public class CustomMileage extends JPanel implements ActionListener{
 				JLabel memberNum = new JLabel("회원번호 006587");
 			JLabel southLbl = new JLabel("Silver 회원");
 		JPanel centerPane = new JPanel();
-			Object head[] = {"출발지","도착지","출발일","도착일","비행편","운임","마일리지","총 마일리지"};
-				String test[][] = {
-						{"서울","호놀룰루","20210202","20210228","BCP0836","190000","190","3800"}
-				};
-				DefaultTableModel model = new DefaultTableModel(test,head);
+			Object head[] = {"출발지","도착지","출발일","항공편명","운임","마일리지","총 마일리지"};
+
+				DefaultTableModel model = new DefaultTableModel(head,0);
 				JTable tbl = new JTable(model);
 				JScrollPane sp = new JScrollPane(tbl);
 			JPanel btnPane	= new JPanel();
@@ -87,6 +91,8 @@ public class CustomMileage extends JPanel implements ActionListener{
 		setVisible(true);
 		
 		returnBtn.addActionListener(this);
+		setTblPrint();
+		setLblPrint();
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
@@ -98,6 +104,32 @@ public class CustomMileage extends JPanel implements ActionListener{
 				CustomFrame.plan.setVisible(true);
 			}
 		} 
+	}
+	
+	public void setTblPrint() {
+		CustomMileageDAO dao = new CustomMileageDAO();
+		String id = AirlineMain.idField.getText();
+		List<CustomMileageVO> lst = dao.setMileage(id);
+		model.setRowCount(0);
+		for(int i=0; i<lst.size(); i++) {
+			CustomMileageVO vo = lst.get(i);
+			Object data[] = {vo.getDep(),vo.getDes(),vo.getBrddate(),vo.getFlightno(),
+					vo.getFare(),vo.getMileage(),vo.getSumMileage()};
+			
+			model.addRow(data);	
+		}
+	}
+	
+	public void setLblPrint() {
+		CustomMileageDAO dao = new CustomMileageDAO();
+		String id = AirlineMain.idField.getText();
+		List<CustomMileageVO> lst = dao.setLabel(id);
+		for(int i=0; i<lst.size(); i++) {
+			CustomMileageVO vo = lst.get(i);
+			memberName.setText(vo.getUser_name());
+			memberNum.setText("회원번호 "+vo.getUserno());
+			southLbl.setText(vo.getGrade()+ " 회원");
+		}
 	}
 
 }

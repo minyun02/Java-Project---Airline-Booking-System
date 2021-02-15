@@ -26,10 +26,10 @@ public class CustomRevise extends JPanel implements ActionListener{
 	JPanel lblPane= new JPanel();
 		JLabel titleLbl = new JLabel("회원정보수정");
 		JPanel hanPane = new JPanel();
-			JLabel hanLbl = new JLabel("이름(한글)");
+			JLabel hanLbl = new JLabel("이름(한글) ex) 홍길동");
 			JTextField hanField = new JTextField(30);
 		JPanel engPane = new JPanel();
-			JLabel engLbl = new JLabel("이름(영문) ex) Kyung Sik Choi");
+			JLabel engLbl = new JLabel("이름(영문) ex) Hong GilDong");
 			JTextField engField = new JTextField(30);
 		JPanel pwdPane = new JPanel();
 			JLabel pwdLbl = new JLabel("비밀번호 ex) 특수문자 !@#만 사용");
