@@ -11,8 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
-import javax.swing.Action;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +21,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
+
+
+import dbAll.EmpFrameDAO;
+import dbAll.EmpFrameVO;
 
 
 public class EmpMainFrame extends JFrame implements ActionListener, MouseListener,Runnable{
@@ -56,14 +61,16 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 			static EmpAirlinePlan plan = new EmpAirlinePlan(); // 로그인 화면시 일정
 			static EmpAirlineSales sales = new EmpAirlineSales(); // 매출관리
 			static EmpAirlineReservation reservation = new EmpAirlineReservation(); //예약관리
-				static EmpAirlineReservation1 reservation1 = new EmpAirlineReservation1(); //항공편을 선택하세요
+				static EmpAirlineReservation1 reservation1 = new EmpAirlineReservation1(); //항공편을 선택하세요 
+				static EmpAirlineReservation2 reservation2 = new EmpAirlineReservation2();
+				static EmpAirlineReservation3 reservation3 = new EmpAirlineReservation3();
 			static EmpFlightChange empFC = new EmpFlightChange();	 //항공편 조회
 			static EmpFlightAdd	flightAdd = new EmpFlightAdd(); // 항공편 추가
 			static EmpUserInfoManagement adminUser = new EmpUserInfoManagement();
 			static EmpInfoManagement adminInfo = new EmpInfoManagement();
 			static EmpBlacklistManagement adminBlack = new EmpBlacklistManagement();
 				
-		static JPanel visiblePane[] = {plan,sales,reservation,reservation1,empFC,flightAdd,adminUser,
+		static JPanel visiblePane[] = {plan,sales,reservation,reservation1,reservation2,reservation3,empFC,flightAdd,adminUser,
 				adminInfo,adminBlack};
 		
 	// 하단패널
@@ -120,6 +127,7 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 			hiLbl.setHorizontalAlignment(JLabel.CENTER); // 라벨 가운데 정렬
 		//		saleLbl.setForeground(new Color(255,128,128));
 			hiLbl.setForeground(new Color(255,128,64));	
+			customNameChange(); 
 				
 		
 		northCPane.add(saleLbl);//매출관리
@@ -174,7 +182,10 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 //		add("Center",centerPane);
 		
 		add("Center",centerPane);
-		centerPane.setBackground(Color.white);centerPane.setLayout(new BorderLayout());	centerPane.add(plan);
+		
+		centerPane.setBackground(Color.white);
+		centerPane.setLayout(new BorderLayout());	
+			centerPane.add(plan);
 		
 		
 
@@ -257,11 +268,8 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 		
 	}
 	
-//	// 페이지 전환 메소드
-//	public static void paneChange(EmpAirlineSales change, String name) {
-//		card.show(change, name);
-//		
-//	}
+
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -360,7 +368,16 @@ public class EmpMainFrame extends JFrame implements ActionListener, MouseListene
 	}
 	
 		
-	
+	// _____님 어서오세요 라벨 변경
+	public void customNameChange() {
+		EmpFrameDAO dao = new EmpFrameDAO();
+		String id = AirlineMain.idField.getText();
+		List<EmpFrameVO> name = dao.getName(id);
+		for(int i=0; i<name.size(); i++) {
+			EmpFrameVO vo = name.get(i);
+			hiLbl.setText(vo.getUser_name()+"님 ");
+		}
+	}
 
 	public static void main(String[] args) {
 		Thread t1= new Thread(new EmpMainFrame());

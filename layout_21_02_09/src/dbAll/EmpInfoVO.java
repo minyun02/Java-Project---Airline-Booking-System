@@ -1,6 +1,5 @@
 package dbAll;
 
-
 public class EmpInfoVO {
 	private String empNo;
 	private String emp_name;
@@ -9,7 +8,7 @@ public class EmpInfoVO {
 	private String emp_tel;
 	private String emp_email;
 	private String emp_dept;
-	private String emp_position;
+	private String emp_job;
 	private String emp_passNo;
 	private String emp_addr;
 	
@@ -26,10 +25,10 @@ public class EmpInfoVO {
 	
 	public EmpInfoVO(String empNo, String emp_name, String emp_birth,
 			String emp_gender, String emp_tel, String emp_email, String emp_dept,
-			String emp_position, String emp_passNo, String emp_addr) {
+			String emp_job, String emp_passNo, String emp_addr) {
 		this(empNo, emp_name, emp_birth, emp_tel, emp_email, emp_dept);
 		this.emp_gender = emp_gender;
-		this.emp_position = emp_position;
+		this.emp_job = emp_job;
 		this.emp_passNo = emp_passNo;
 		this.emp_addr = emp_addr;
 	}
@@ -90,20 +89,20 @@ public class EmpInfoVO {
 		this.emp_dept = emp_dept;
 	}
 
-	public String getEmp_position() {
-		return emp_position;
+	public String getEmp_job() {
+		return emp_job;
 	}
 
-	public void setEmp_position(String emp_position) {
-		this.emp_position = emp_position;
+	public void setEmp_job(String emp_job) {
+		this.emp_job = emp_job;
 	}
 
-	public String getEmp_passport() {
+	public String getEmp_passNo() {
 		return emp_passNo;
 	}
 
-	public void setEmp_passport(String emp_passport) {
-		this.emp_passNo = emp_passport;
+	public void setEmp_passNo(String emp_passNo) {
+		this.emp_passNo = emp_passNo;
 	}
 
 	public String getEmp_addr() {

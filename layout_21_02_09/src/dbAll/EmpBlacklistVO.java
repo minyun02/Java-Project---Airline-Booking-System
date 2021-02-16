@@ -3,34 +3,47 @@ package dbAll;
 
 public class EmpBlacklistVO {
 	private int userNo;
-	private String b_name_kor;
-	private String b_name_eng;
-	private String b_passportNo;
-	private String b_expireDate;
-	private String b_gender;
-	private String b_reason;
+	private String black_name;
+	private String black_ename;
+	private String black_birth;
+	private String black_passNo;
+	private String black_gender;
+	private String black_exDate;
+	private String reason;
+	private String regDate;
 
 	public EmpBlacklistVO() {}
 	
-	public EmpBlacklistVO(int userNo, String b_name_kor, String b_name_eng,
-			String b_passportNo, String b_gender, String b_reason) {
+	public EmpBlacklistVO(String black_name, String black_ename, String black_passNo,
+			String black_gender, String reason, int userNo) {
 		this.userNo = userNo;
-		this.b_name_kor = b_name_kor;
-		this.b_name_eng = b_name_eng;
-		this.b_passportNo = b_passportNo;
-		this.b_gender = b_gender;
-		this.b_reason = b_reason;
+		this.black_name = black_name;
+		this.black_ename = black_ename;
+		this.black_passNo = black_passNo;
+		this.black_gender = black_gender;
+		this.reason = reason;
 	}
 	
-	public EmpBlacklistVO(String b_name_kor, String b_name_eng, String b_passportNo,
-			String b_expireDate, String b_gender, String b_reason) {
+	public EmpBlacklistVO(String black_name, String black_ename, String black_passNo,
+			String black_gender, String black_birth, String reason, int userNo, String regDate) {
+		this.black_name = black_name;
+		this.black_ename = black_ename;
+		this.black_passNo = black_passNo;
+		this.black_gender = black_gender;
+		this.black_birth = black_birth;
+		this.reason = reason;
 		this.userNo = userNo;
-		this.b_name_kor = b_name_kor;
-		this.b_name_eng = b_name_eng;
-		this.b_passportNo = b_passportNo;
-		this.b_expireDate = b_expireDate;
-		this.b_gender = b_gender;
-		this.b_reason = b_reason;
+		this.regDate = regDate;
+	}
+	
+	public EmpBlacklistVO(String black_name, String black_ename, String black_passNo,
+			String black_gender, String black_birth, String reason) {
+		this.black_name = black_name;
+		this.black_ename = black_ename;
+		this.black_passNo = black_passNo;
+		this.black_gender = black_gender;
+		this.black_birth = black_birth;
+		this.reason = reason;
 	}
 
 	public int getUserNo() {
@@ -41,53 +54,70 @@ public class EmpBlacklistVO {
 		this.userNo = userNo;
 	}
 
-	public String getB_name_kor() {
-		return b_name_kor;
+	public String getBlack_name() {
+		return black_name;
 	}
 
-	public void setB_name_kor(String b_name_kor) {
-		this.b_name_kor = b_name_kor;
+	public void setBlack_name(String black_name) {
+		this.black_name = black_name;
 	}
 
-	public String getB_name_eng() {
-		return b_name_eng;
+	public String getBlack_ename() {
+		return black_ename;
 	}
 
-	public void setB_name_eng(String b_name_eng) {
-		this.b_name_eng = b_name_eng;
+	public void setBlack_ename(String black_ename) {
+		this.black_ename = black_ename;
 	}
 
-	public String getB_passportNo() {
-		return b_passportNo;
+	public String getBlack_birth() {
+		return black_birth;
 	}
 
-	public void setB_passportNo(String b_passportNo) {
-		this.b_passportNo = b_passportNo;
+	public void setBlack_birth(String black_birth) {
+		this.black_birth = black_birth;
 	}
 
-	public String getB_expireDate() {
-		return b_expireDate;
+	public String getBlack_passNo() {
+		return black_passNo;
 	}
 
-	public void setB_expireDate(String b_expireDate) {
-		this.b_expireDate = b_expireDate;
+	public void setBlack_passNo(String black_passNo) {
+		this.black_passNo = black_passNo;
 	}
 
-	public String getB_gender() {
-		return b_gender;
+	public String getBlack_gender() {
+		return black_gender;
 	}
 
-	public void setB_gender(String b_gender) {
-		this.b_gender = b_gender;
+	public void setBlack_gender(String black_gender) {
+		this.black_gender = black_gender;
 	}
 
-	public String getB_reason() {
-		return b_reason;
+	public String getBlack_exDate() {
+		return black_exDate;
 	}
 
-	public void setB_reason(String b_reason) {
-		this.b_reason = b_reason;
+	public void setBlack_exDate(String black_exDate) {
+		this.black_exDate = black_exDate;
 	}
 
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getRegDate() {
+		return regDate;
+	}
+
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	
+	
 }
 

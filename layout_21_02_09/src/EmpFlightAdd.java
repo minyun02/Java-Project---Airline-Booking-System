@@ -94,10 +94,10 @@ public class EmpFlightAdd  extends JPanel implements ActionListener{
 		setDepDes();//모든 출발지, 도착지 콤보박스에 세팅
 		
 		
-		add(calBtn).setBounds(300, 90, 50, 50);
-			calBtn.setBorderPainted(false);
-			calBtn.setContentAreaFilled(false);
-			calBtn.setFocusPainted(false);
+//		add(calBtn).setBounds(300, 90, 50, 50);
+//			calBtn.setBorderPainted(false);
+//			calBtn.setContentAreaFilled(false);
+//			calBtn.setFocusPainted(false);
 		add(titleLbl).setBounds(400,70, 250, 30);
 			titleLbl.setFont(titleFnt);
 		add(regNoLbl).setBounds(x, 180, 100,30); 
